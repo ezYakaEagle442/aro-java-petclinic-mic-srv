@@ -1,0 +1,15 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  labels:
+    app: admin-server
+  name: route-petclinic-admin-server
+spec:
+  host: xxxx.<Ingress_Domain>
+  port:
+    targetPort: 8080-tcp
+  path: "/admin-server"
+  to:
+    kind: Service
+    name: admin-server
+    weight: 100 

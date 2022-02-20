@@ -1,0 +1,39 @@
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  generateName: run-java8-
+spec:
+  pipelineRef:
+    name: build-and-deploy-java-8
+  # https://github.com/tektoncd/pipeline/blob/master/docs/pipelineruns.md#specifying-parameters
+  # You can specify Parameters that you want to pass to the Pipeline during execution, including different values of the same parameter for different Tasks in the Pipeline.
+  # Note: You must specify all the Parameters that the Pipeline expects. Parameters that have default values specified in Pipeline are not required to be provided by PipelineRun.
+  params:
+  - name: deployment-name
+    value: spring-boot-hello-demo
+  - name: git-url
+    value: https://github.com/ezYakaEagle442/gs-spring-boot-spock
+  - name: git-revision
+    value: master
+  - name: manifest-dir
+    value: "k8s-app"
+  - name: IMAGE
+    value: image-registry.openshift-image-registry.svc:5000/3scale-test/spring-boot-hello-demo
+  workspaces:
+  - name: maven-settings
+    configMap:
+      name: custom-maven-settings
+      items:
+      - key: settings.xml
+        path: settings.xml
+  - name: local-maven-repo
+    persistentVolumeClaim:
+      claimName: maven-repo-pvc
+  - name: shared-workspace
+    volumeClaimTemplate:
+      spec:
+        accessModes:
+        - ReadWriteMany
+        resources:
+          requests:
+            storage: 500Mi         

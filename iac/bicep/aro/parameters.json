@@ -1,0 +1,57 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "appName": {
+        "value": "petcliaro"
+      }, 
+      "kvName": {
+        "value": "kv-petclinic-aro"
+      },
+      "kvRGName": {
+        "value": "rg-petclinic-aro"
+      },      
+      "location": {
+        "value": "northeurope"
+      },       
+      "clientId": {
+        "value": "xxxxx"
+      },    
+      "clientObjectId": {
+        "value": "xxxxxxxx"
+      }, 
+      "clientSecret": {
+        "value": "xxx"
+      },    
+      "aroRpObjectId": {
+        "value": "xxx"
+      }, 
+      "pullSecret": {
+        "value": "xxx"
+      }, 
+      "domain": {
+        "value": "petclinicrocks"
+      },    
+      "clusterName": {
+        "value": "aro-java-petclinic"
+      },    
+      "vnetName": {
+        "value": "vnet-aro"
+      },       
+      "vnetCidr": {
+        "value": "172.32.0.0/21"
+      }, 
+      "masterSubnetCidr": {
+        "value": "172.32.1.0/24"
+      },    
+      "workerSubnetCidr": {
+        "value": "172.32.2.0/24"
+      },       
+      "administratorLogin": {
+        "value": "mys_adm"
+      },
+      "administratorLoginPassword": {
+        "value": "istrator"
+      }          
+    }
+  }

@@ -1,0 +1,36 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: apply-manifests
+spec:
+  workspaces:
+  - name: source
+  params:
+    - name: manifest_dir
+      description: The directory in source that contains yaml manifests
+      type: string
+      default: "k8s"
+  steps:
+    - name: apply
+      image: quay.io/openshift/origin-cli:latest
+      workingDir: /workspace/source
+      command: ["/bin/bash", "-c"]
+      args:
+        - |-
+          echo Downloading manifests to $(inputs.params.manifest_dir) directory
+
+          curl  https://raw.githubusercontent.com/ezYakaEagle442/aro-java-petclinic-mic-srv/master/cicd/tkn/cnf/petclinic-deployment.yaml -o petclinic-deployment.yaml
+          curl  https://raw.githubusercontent.com/ezYakaEagle442/aro-java-petclinic-mic-srv/master\cicd/tkn/cnf/petclinic-service-cluster-ip.yaml -o petclinic-service-cluster-ip.yam
+          curl  https://github.com/ezYakaEagle442/aro-java-petclinic-mic-srv/master/cicd/tkn/cnf/petclinic-service-lb.yaml -o petclinic-service-lb.yaml
+          curl  https://github.com/ezYakaEagle442/aro-java-petclinic-mic-srv/master/cicd/tkn/cnf/petclinic-ingress.yaml -o petclinic-ingress.yaml
+
+          echo Copying manifests to $(inputs.params.manifest_dir) directory
+          mkdir $(inputs.params.manifest_dir)
+          cp petclinic-deployment.yaml $(inputs.params.manifest_dir)
+          cp petclinic-service-cluster-ip.yaml $(inputs.params.manifest_dir)
+          cp petclinic-service-lb.yaml $(inputs.params.manifest_dir)
+          cp petclinic-ingress.yaml $(inputs.params.manifest_dir)
+
+          echo Applying manifests in $(inputs.params.manifest_dir) directory
+          oc apply -f $(inputs.params.manifest_dir)
+          echo -----------------------------------
