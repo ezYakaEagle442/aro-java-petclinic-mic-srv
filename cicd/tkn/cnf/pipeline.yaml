@@ -7,6 +7,7 @@ spec:
   - name: shared-workspace
   # - name: local-maven-repo
   - name: maven-settings
+    optional: true
   params:
   - name: deployment-name
     type: string
@@ -60,7 +61,7 @@ spec:
         # - -DskipTests
         - clean
         - package
-        - Dmaven.repo.local=$(workspaces.local-maven-repo.path)
+        #- Dmaven.repo.local=$(workspaces.local-maven-repo.path)
     workspaces:
     - name: source
       workspace: shared-workspace
