@@ -21,7 +21,7 @@ spec:
     description: image to be build from the code
   - name: subdirectory
     type: string
-    description: the sub directory in the Git repo
+    description: Subdirectory inside the `output` Workspace to clone the repo into
   tasks:
   - name: fetch-repository
     taskRef:
