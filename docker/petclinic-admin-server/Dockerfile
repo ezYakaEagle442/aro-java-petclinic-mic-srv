@@ -21,9 +21,10 @@ LABEL Description="PetClinic admin-server: Java Spring Boot microservice built f
 
 RUN java -version
 RUN ls -al /usr/lib/jvm/msopenjdk-11
-
-RUN ls -al "./spring-petclinic-admin-server/target"
+RUN pwd
+RUN ls -al 
 RUN ls -al "./spring-petclinic-admin-server"
+RUN ls -al "./spring-petclinic-admin-server/target"
 
 RUN mkdir /tmp/app
 WORKDIR /tmp/app
