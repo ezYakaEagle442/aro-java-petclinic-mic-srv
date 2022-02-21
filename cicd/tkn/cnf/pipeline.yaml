@@ -55,8 +55,11 @@ spec:
       name: maven
       kind: ClusterTask
     params:
-    - name: GOALS
-      value: ["clean", "package"]
+    - name: GOALS # https://hub.tekton.dev/tekton/task/maven
+      value:
+        # - -DskipTests
+        - clean
+        - package      
     workspaces:
     - name: source
       workspace: shared-workspace
