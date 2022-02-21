@@ -6,7 +6,7 @@ spec:
   workspaces:
   - name: shared-workspace
   - name: local-maven-repo
-  # - name: maven-settings
+  - name: maven-settings
   params:
   - name: deployment-name
     type: string
@@ -65,6 +65,8 @@ spec:
       workspace: shared-workspace
     - name: maven-repo
       workspace: local-maven-repo
+    - name: maven-settings
+      workspace: maven-settings      
     runAfter:
     - fetch-repository
   - name: build-image
@@ -84,7 +86,7 @@ spec:
     - name: source
       workspace: shared-workspace
     runAfter:
-    - fetch-repository
+    - maven-build
   - name: apply-manifests
     taskRef:
       name: apply-manifests
