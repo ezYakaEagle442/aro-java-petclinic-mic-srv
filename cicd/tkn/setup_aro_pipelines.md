@@ -7,9 +7,32 @@
 - [Guide to OpenShift pipelines part4](https://www.openshift.com/blog/guide-to-openshift-pipelines-part-4-application-deployment-and-pipeline-orchestration-1)
 
 ## pre-req
-Check [tkn cli is installed](./tools.md#how-to-install-tekton-cli)
+Check tkn cli is installed
+
+## How to install Tekton CLI
+[https://github.com/tektoncd/cli](https://github.com/tektoncd/cli)
+
+### From Linux AMD64 / WSL
+```sh
+tkn_version=0.22.0
+# Get the tar.xz
+curl -LO https://github.com/tektoncd/cli/releases/download/v$tkn_version/tkn_$tkn_version\_Linux_x86_64.tar.gz
+# Extract tkn to your PATH (e.g. /usr/local/bin)
+sudo tar xvzf tkn_$tkn_version\_Linux_x86_64.tar.gz -C /usr/local/bin/ tkn
+```
+### Mac
+```sh
+brew install tektoncd-cli
+```
+### From Chocolatey
+```sh
+choco install tektoncd-cli --confirm
+```
 
 ```sh
+source <(tkn completion bash)
+complete -F __start_tkn tkn
+
 tkn help
 tkn version
 ```
@@ -23,7 +46,7 @@ echo "$aro_console_url/operatorhub/ns/openshift-machine-api?category=Developer+T
 ## Create a dummy App. Pipeline
 
 ```sh
-projectname = "pipelines-tutorial"
+projectname="petclinic"
 oc new-project $projectname
 
 oc config current-context
