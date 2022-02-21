@@ -22,6 +22,15 @@ spec:
   - name: subdirectory
     type: string
     description: Subdirectory inside the `output` Workspace to clone the repo into
+  - name: DOCKERFILE
+    type: string
+    description: Path to the Dockerfile to build.
+  - name: CONTEXT
+    type: string
+    description: Path to the directory to use as context.
+  - name: FORMAT
+    type: string
+    description: The format of the built container, oci or docker
   tasks:
   - name: fetch-repository
     taskRef:
@@ -48,6 +57,10 @@ spec:
       value: "false"
     - name: IMAGE
       value: $(params.IMAGE)
+    - name: DOCKERFILE
+      value: $(params.DOCKERFILE)
+    - name: CONTEXT
+      value: $(params.CONTEXT)           
     workspaces:
     - name: source
       workspace: shared-workspace
