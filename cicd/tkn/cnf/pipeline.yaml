@@ -5,7 +5,7 @@ metadata:
 spec:
   workspaces:
   - name: shared-workspace
-  - name: local-maven-repo
+  # - name: local-maven-repo
   - name: maven-settings
   params:
   - name: deployment-name
@@ -59,12 +59,13 @@ spec:
       value:
         # - -DskipTests
         - clean
-        - package      
+        - package
+        - Dmaven.repo.local=$(workspaces.local-maven-repo.path)
     workspaces:
     - name: source
       workspace: shared-workspace
-    - name: maven-repo
-      workspace: local-maven-repo
+    #- name: maven-repo
+    #  workspace: local-maven-repo
     - name: maven-settings
       workspace: maven-settings      
     runAfter:

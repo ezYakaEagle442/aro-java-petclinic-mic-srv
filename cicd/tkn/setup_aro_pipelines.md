@@ -80,6 +80,8 @@ oc describe scc privileged
 oc create -f ./cnf/apply_manifest_task.yaml
 oc create -f ./cnf/update_deployment_task.yaml
 oc create -f ./cnf/persistent_volume_claim.yaml
+oc create -f ./cnf/storageclass-azurefile.yaml
+oc create cm custom-maven-settings --from-file=./cnf/maven_config_map.yaml
 oc apply -f  ./cnf/pipeline.yaml
 
 tkn task ls
@@ -92,19 +94,23 @@ oc get tektonconfigs
 oc describe tektonconfig config
 oc describe clustertask git-clone-1-5-0
 oc describe clustertask buildah
+oc describe clustertask maven
 
 oc describe clustertask buildah
 # Lets start a pipeline to build and deploy the petclinic admin-server backend application using tkn:
 tkn pipeline start build-and-deploy \
     -w name=shared-workspace,volumeClaimTemplateFile=./cnf/persistent_volume_claim.yaml \
+    -w name=maven-settings,configMap=./cnf/maven_config_map.yaml \
     -p deployment-name=admin-server \
     -p git-url=https://github.com/ezYakaEagle442/aro-java-petclinic-mic-srv \
     -p git-revision=master \
     -p DOCKERFILE=docker/petclinic-admin-server/Dockerfile \
-    -p CONTEXT=spring-petclinic-admin-server \
+    -p CONTEXT=/ \
     -p IMAGE=image-registry.openshift-image-registry.svc:5000/$projectname/admin-server
+    -p FORMAT=oci \
+    -p subdirectory=spring-petclinic-admin-server
     # --dry-run
-    # -p subdirectory=spring-petclinic-admin-server \
+    # -w name=local-maven-repo,volumeClaimTemplateFile=./cnf/maven_pvc.yaml \
 
 #  get the route of the application by executing the following command and access the application
 oc get route pipelines-admin-server --template='http://{{.spec.host}}'
