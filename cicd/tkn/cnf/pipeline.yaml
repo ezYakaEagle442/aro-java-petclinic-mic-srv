@@ -50,20 +50,6 @@ spec:
       value: "true"
     - name: revision
       value: $(params.git-revision)
-  - name: java-format
-    taskRef:
-      name: maven
-      kind: ClusterTask
-    params:
-    - name: GOALS
-      value: ["spring-javaformat:apply"]
-    workspaces:
-    - name: source
-      workspace: shared-workspace
-    - name: maven-repo
-      workspace: local-maven-repo
-    runAfter:
-    - fetch-repository 
   - name: maven-build
     taskRef:
       name: maven
@@ -77,7 +63,7 @@ spec:
     - name: maven-repo
       workspace: local-maven-repo
     runAfter:
-    - java-format
+    - fetch-repository
   - name: build-image
     taskRef:
       name: buildah
