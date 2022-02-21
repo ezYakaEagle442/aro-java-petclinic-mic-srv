@@ -18,7 +18,7 @@ spec:
   - name: manifest-dir
     value: "k8s-app"
   - name: IMAGE
-    value: image-registry.openshift-image-registry.svc:5000/3scale-test/spring-boot-hello-demo
+    value: image-registry.openshift-image-registry.svc:5000/xxx-test/spring-boot-hello-demo
   workspaces:
   - name: maven-settings
     configMap:

@@ -1,0 +1,118 @@
+#
+
+name: OpenShift Pet Clinic Workflow
+
+on: [ push, workflow_dispatch ]
+
+env:
+  IMAGE_REGISTRY: quay.io
+  IMAGE_REGISTRY_NAMESPACE: redhat-github-actions
+  TEST_NAMESPACE: ${{ secrets.OPENSHIFT_NAMESPACE }}
+  APP_NAME: petclinic
+  APP_PORT: 8080
+  TEAR_DOWN: false
+
+inputs:
+  microservice-name:
+    description: 'The name of the microservice to deploy to ARO'
+    required: true
+    # default: '1'
+    docker-file-name:
+    description: 'The name of the Dockerfile to use from ./docker to build the image'
+    required: true
+
+jobs:
+  #####################################################################################################################
+  ## The compile job compiles the application into a jar, and uploads it as an artifact for the next job to use.
+  compile:
+    name: Compile
+    runs-on: ubuntu-20.04
+    outputs:
+      jarname: ${{ steps.get-jarname.outputs.jarname }}
+      commit_sha: ${{ steps.commit-data.outputs.short_sha }}
+    env:
+      TARGET_DIR: target/
+      MVN_REPO_DIR: ~/.m2/repository
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup Java
+      uses: actions/setup-java@v2
+      with:
+        java-version: '11'
+        distribution: 'microsoft'
+        cache: maven
+
+    - run: java -version
+
+    - run: mvn -ntp -B package
+
+    # Store the output jar into the env for reuse below.
+    # It will contain, eg. "spring-petclinic-2.3.0.BUILD-SNAPSHOT.jar"
+    - name: Get jar filename
+      id: get-jarname
+      run: |
+        export JAR_NAME="$(basename $(ls target/*.jar))"
+        echo "Petclinic jar is $JAR_NAME"
+        echo "::set-output name=jarname::$JAR_NAME"
+        echo "JAR_NAME=$JAR_NAME" >> $GITHUB_ENV
+
+    # Upload the jar for future jobs to use.
+    - uses: actions/upload-artifact@v2
+      with:
+        name: ${{ env.JAR_NAME }}
+        path: ${{ env.TARGET_DIR }}/${{ env.JAR_NAME }}
+        if-no-files-found: error
+
+    # Use the commit short-sha as the suffix of the app_name
+    - name: Get commit short-sha
+      id: commit-data
+      uses: redhat-actions/common/commit-data@v1
+
+  #####################################################################################################################
+  ## The build and push image job builds the container image with the petclinic jar in it,
+  ## and pushes it to an image registry.
+  ## It outputs the image tag and image URL for the next step to use when deploying to the OpenShift cluster.
+  build-push-image:
+    name: Build and Push to Quay
+    runs-on: ubuntu-20.04
+    needs: compile
+    outputs:
+      registry-path: ${{ steps.push-to-quay.outputs.registry-path }}
+    env:
+      JAR_NAME: ${{ needs.compile.outputs.jarname }}
+      IMAGE_TAGS: latest ${{ needs.compile.outputs.commit_sha }}
+    steps:
+      # Download the jar artifact from the compile step
+      - uses: actions/download-artifact@v2
+        with:
+          name: ${{ env.JAR_NAME }}
+
+      # Use buildah to build the application image with the jar inside.
+      - name: Build Image
+        id: build-image
+        uses: redhat-actions/buildah-build@v2
+        with:
+          image: ${{ env.APP_NAME }}
+          tags: ${{ env.IMAGE_TAGS }}
+          oci: true
+          base-image: docker.io/fabric8/java-alpine-openjdk11-jre
+          content: ${{ env.JAR_NAME }}
+          entrypoint: |
+            java
+            -jar
+            ${{ env.JAR_NAME }}
+          port: ${{ env.APP_PORT }}
+
+      # Push the built image to our image registry so it can be pulled into the OpenShift cluster.
+      - name: Push to Quay
+        id: push-to-quay
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          image: ${{ steps.build-image.outputs.image }}
+          tags: ${{ steps.build-image.outputs.tags }}
+          registry: ${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_REGISTRY_NAMESPACE }}
+          username: ${{ secrets.REGISTRY_USER }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      # For deploying to OpenShift, see https://github.com/redhat-actions/oc-new-app/blob/main/.github/workflows/example.yml
