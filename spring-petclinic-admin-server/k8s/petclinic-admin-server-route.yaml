@@ -5,7 +5,7 @@ metadata:
     app: admin-server
   name: route-petclinic-admin-server
 spec:
-  host: xxxx.<Ingress_Domain>
+  host: xxxx.<Ingress_Domain> # http://pipelines-hello-aro-<namespace>.apps.<domain>.northeurope.aroapp.io/
   port:
     targetPort: 8080-tcp
   path: "/admin-server"
