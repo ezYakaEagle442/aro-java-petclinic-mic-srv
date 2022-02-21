@@ -5,6 +5,7 @@
 - [TektonCD Pipelines](https://github.com/tektoncd/pipeline/blob/master/docs/pipelines.md)
 - [Guide to OpenShift pipelines part 2](https://www.openshift.com/blog/guide-to-openshift-pipelines-part-2-using-source-2-image-build-in-tekton)
 - [Guide to OpenShift pipelines part4](https://www.openshift.com/blog/guide-to-openshift-pipelines-part-4-application-deployment-and-pipeline-orchestration-1)
+- [https://vincent.demeester.fr/articles/tekton-pipeline-without-pipeline-resources.html](https://vincent.demeester.fr/articles/tekton-pipeline-without-pipeline-resources.html)
 
 ## pre-req
 Check tkn cli is installed
@@ -81,8 +82,11 @@ oc create -f ./cnf/apply_manifest_task.yaml
 oc create -f ./cnf/update_deployment_task.yaml
 oc create -f ./cnf/persistent_volume_claim.yaml
 oc create -f ./cnf/storageclass-azurefile.yaml
-oc create cm maven-settings --from-file=./cnf/maven_config_map.yaml
 oc apply -f  ./cnf/pipeline.yaml
+
+oc apply -f ./cnf/maven_config_map.yaml
+oc describe cm maven-settings
+oc get cm maven-settings -o jsonpath='{.data.settings\.xml}'
 
 tkn task ls
 tkn clustertask ls
@@ -95,8 +99,10 @@ oc describe tektonconfig config
 oc describe clustertask git-clone-1-5-0
 oc describe clustertask buildah
 oc describe clustertask maven
-
 oc describe clustertask buildah
+
+
+
 # Lets start a pipeline to build and deploy the petclinic admin-server backend application using tkn:
 tkn pipeline start build-and-deploy \
     -w name=shared-workspace,volumeClaimTemplateFile=./cnf/persistent_volume_claim.yaml \
