@@ -5,6 +5,8 @@ metadata:
 spec:
   workspaces:
   - name: shared-workspace
+  - name: local-maven-repo
+  - name: maven-settings
   params:
   - name: deployment-name
     type: string
