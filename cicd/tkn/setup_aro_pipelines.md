@@ -90,17 +90,18 @@ tkn tr list # taskruns
 
 oc get tektonconfigs
 oc describe tektonconfig config
+oc describe clustertask git-clone-1-5-0
 
 oc describe clustertask buildah
 # Lets start a pipeline to build and deploy the petclinic admin-server backend application using tkn:
 tkn pipeline start build-and-deploy \
     -w name=shared-workspace,volumeClaimTemplateFile=./cnf/persistent_volume_claim.yaml \
     -p deployment-name=admin-server \
-    -p git-url=https://github.com/ezYakaEagle442/aro-java-petclinic-mic-srv \
+    -p git-url=https://github.com/ezYakaEagle442/aro-java-petclinic-mic-srv/spring-petclinic-admin-server \
     -p git-revision=master \
-    -p subdirectory=spring-petclinic-admin-server
-    -p IMAGE=image-registry.openshift-image-registry.svc:5000/$projectname/admin-server
-    # --dry-run
+    -p IMAGE=image-registry.openshift-image-registry.svc:5000/$projectname/admin-server \
+    --dry-run
+    # -p subdirectory=spring-petclinic-admin-server \
 
 #  get the route of the application by executing the following command and access the application
 oc get route pipelines-admin-server --template='http://{{.spec.host}}'
