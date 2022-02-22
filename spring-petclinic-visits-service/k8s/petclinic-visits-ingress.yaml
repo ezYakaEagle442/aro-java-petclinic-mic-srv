@@ -1,0 +1,27 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ing-petclinic-visits
+spec:
+  rules:
+  - host: route-ui-petclinic.apps.gbbappinno.northeurope.aroapp.io
+    http:
+      paths:
+      - backend:
+          serviceName: visits-service
+          servicePort: 80
+        path: /visits-service
+      - backend:
+          serviceName: visits-service
+          servicePort: 80
+        path: /api/visit/
+      - backend:
+          serviceName: visits-service
+          servicePort: 8081
+        path: /manage/health
+      - backend:
+          serviceName: visits-service
+          servicePort: 8081
+        path: /manage/info
+
+

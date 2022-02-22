@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ing-petclinic-config-server
+spec:
+  rules:
+  - host: route-ui-petclinic.apps.gbbappinno.northeurope.aroapp.io
+    http:
+      paths:
+      - backend:
+          serviceName: config-server
+          servicePort: 8888
+        path: /config-server
+      - backend:
+          serviceName: config-server
+          servicePort: 8081
+        path: /manage/health
+      - backend:
+          serviceName: config-server
+          servicePort: 8081
+        path: /manage/info
