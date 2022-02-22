@@ -116,8 +116,7 @@ tkn pipeline start build-and-deploy \
     -p FORMAT=oci \
     -p subdirectory=spring-petclinic-admin-server
     # --dry-run
-    # -w name=local-maven-repo,volumeClaimTemplateFile=./cnf/maven_pvc.yaml \
-
+    
 #  get the route of the application by executing the following command and access the application
 oc get route pipelines-admin-server --template='http://{{.spec.host}}'
 
