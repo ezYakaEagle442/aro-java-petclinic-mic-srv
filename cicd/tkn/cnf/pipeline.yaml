@@ -33,6 +33,10 @@ spec:
   - name: FORMAT
     type: string
     description: The format of the built container, oci or docker
+  - name: manifest_dir
+    description: The directory in source that contains yaml manifests
+    type: string
+    default: "k8s"    
   tasks:
   - name: fetch-repository
     taskRef:
@@ -99,6 +103,9 @@ spec:
   - name: apply-manifests
     taskRef:
       name: apply-manifests
+    params:
+    - name: manifest_dir
+      value: $(params.manifest_dir)
     workspaces:
     - name: source
       workspace: shared-workspace

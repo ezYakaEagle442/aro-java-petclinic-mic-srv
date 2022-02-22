@@ -102,7 +102,9 @@ oc describe tektonconfig config
 oc describe clustertask git-clone-1-5-0
 oc describe clustertask buildah
 oc describe clustertask maven
-oc describe clustertask buildah
+
+
+#TODO https://github.com/tektoncd/catalog/blob/main/task/buildah/0.3/samples/openshift-internal-registry.yaml
 
 # Lets start a pipeline to build and deploy the petclinic admin-server backend application using tkn:
 tkn pipeline start build-and-deploy \
@@ -112,15 +114,20 @@ tkn pipeline start build-and-deploy \
     -p git-url=https://github.com/ezYakaEagle442/aro-java-petclinic-mic-srv \
     -p git-revision=master \
     -p DOCKERFILE=docker/petclinic-admin-server/Dockerfile \
-    -p CONTEXT=/ \
+    -p CONTEXT=. \
     -p IMAGE=image-registry.openshift-image-registry.svc:5000/$projectname/admin-server
     -p FORMAT=oci \
     -p subdirectory=spring-petclinic-admin-server
+    -p manifest_dir=spring-petclinic-admin-server/k8s
     # --dry-run
 
 # Debug/Troubleshoot:
+
+oc describe task apply-manifests
+
+oc describe task check-mvn-output
 tkn task start check-mvn-output \
-    -w name=shared-workspace,volumeClaimTemplateFile=./cnf/persistent_volume_claim.yaml
+    -w name=output,volumeClaimTemplateFile=./cnf/persistent_volume_claim.yaml
 
 #  get the route of the application by executing the following command and access the application
 oc get route pipelines-admin-server --template='http://{{.spec.host}}'
