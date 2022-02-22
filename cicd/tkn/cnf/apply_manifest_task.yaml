@@ -17,6 +17,50 @@ spec:
       command: ["/bin/bash", "-c"]
       args:
         - |-
+
+          echo -----------------------------------  
+          echo workingDir 
+          pwd
+          echo -----------------------------------
+          echo listing current directory
+          ls -al 
+          echo -----------------------------------
+          echo listing $(workspaces.output.path)
+          ls -al $(workspaces.output.path)
+          echo -----------------------------------
+
+          echo Checking Manifests files in the k8s directory
+
+          echo -----------------------------------
+          echo "spring-petclinic-admin-server"
+          ls -al "spring-petclinic-admin-server/k8s"
+          echo -----------------------------------
+
+          echo -----------------------------------
+          echo "spring-petclinic-api-gateway"
+          ls -al "spring-petclinic-api-gateway/k8s"
+          echo -----------------------------------
+
+          echo -----------------------------------
+          echo "spring-petclinic-config-server"
+          ls -al "spring-petclinic-config-server/k8s"
+          echo -----------------------------------
+
+          echo -----------------------------------
+          echo "spring-petclinic-customers-service"
+          ls -al "spring-petclinic-customers-service/k8s"
+          echo -----------------------------------
+
+          echo -----------------------------------
+          echo "spring-petclinic-vets-service"
+          ls -al "spring-petclinic-vets-service/k8s"
+          echo -----------------------------------
+
+          echo -----------------------------------
+          echo "spring-petclinic-visits-service"
+          ls -al "spring-petclinic-visits-service/k8s"
+          echo -----------------------------------
+        
           echo Applying manifests in $(inputs.params.manifest_dir) directory
           oc apply -f $(inputs.params.manifest_dir)
           echo -----------------------------------
