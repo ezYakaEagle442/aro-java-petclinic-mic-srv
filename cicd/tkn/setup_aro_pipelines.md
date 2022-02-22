@@ -115,9 +115,9 @@ tkn pipeline start build-and-deploy \
     -p git-revision=master \
     -p DOCKERFILE=docker/petclinic-admin-server/Dockerfile \
     -p CONTEXT=. \
-    -p IMAGE=image-registry.openshift-image-registry.svc:5000/$projectname/admin-server
+    -p IMAGE=image-registry.openshift-image-registry.svc:5000/$projectname/admin-server \
     -p FORMAT=oci \
-    -p subdirectory=spring-petclinic-admin-server
+    -p subdirectory=spring-petclinic-admin-server \
     -p manifest_dir=spring-petclinic-admin-server/k8s
     # --dry-run
 
