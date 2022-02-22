@@ -36,6 +36,9 @@ RUN ls -al
 
 RUN mkdir /tmp/app
 WORKDIR /tmp/app
+
+#test
+COPY "./docker/petclinic-admin-server/Dockerfile" /tmp/app/fooDockerfile
 COPY "spring-petclinic-admin-server/target/*.jar" /tmp/app/app.jar
 
 # RUN yum install maven -y
