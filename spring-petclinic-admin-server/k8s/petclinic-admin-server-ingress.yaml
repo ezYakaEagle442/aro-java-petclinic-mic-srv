@@ -17,12 +17,14 @@ spec:
       - path: /manage/health
         pathType: "Prefix"
         backend:
+          service:
             name: admin-server
             port: 
               number: 8081
       - path: /manage/info
         pathType: "Prefix"
         backend:
+          service:
             name: admin-server
             port: 
               number: 8081
