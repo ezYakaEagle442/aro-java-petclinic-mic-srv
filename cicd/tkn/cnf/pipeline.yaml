@@ -5,9 +5,8 @@ metadata:
 spec:
   workspaces:
   - name: shared-workspace
-  # - name: local-maven-repo
   - name: maven-settings
-    optional: true
+  # - name: local-maven-repo
   params:
   - name: deployment-name
     type: string
@@ -65,10 +64,10 @@ spec:
     workspaces:
     - name: source
       workspace: shared-workspace
-    #- name: maven-repo
-    #  workspace: local-maven-repo
     - name: maven-settings
       workspace: maven-settings      
+    #- name: maven-repo
+    #  workspace: local-maven-repo
     runAfter:
     - fetch-repository
   - name: check-mvn
