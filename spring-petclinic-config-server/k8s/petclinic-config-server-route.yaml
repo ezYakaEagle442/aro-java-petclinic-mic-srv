@@ -1,0 +1,13 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  labels:
+    app: config-server
+  name: route-config
+spec:
+  port:
+    targetPort: http-8080
+  to:
+    kind: Service
+    name: config-server
+    weight: 100 

@@ -1,0 +1,13 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  labels:
+    app: customers-service
+  name: route-customers
+spec:
+  port:
+    targetPort: http-8080
+  to:
+    kind: Service
+    name: customers-service
+    weight: 100 

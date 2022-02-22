@@ -1,0 +1,13 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  labels:
+    app: vets-service
+  name: route-vets
+spec:
+  port:
+    targetPort: http-8080
+  to:
+    kind: Service
+    name: vets-service
+    weight: 100 
