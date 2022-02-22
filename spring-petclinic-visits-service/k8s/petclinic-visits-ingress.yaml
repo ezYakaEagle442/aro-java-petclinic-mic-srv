@@ -11,17 +11,21 @@ spec:
           serviceName: visits-service
           servicePort: 80
         path: /visits-service
+        pathType: "Prefix"
       - backend:
           serviceName: visits-service
           servicePort: 80
         path: /api/visit/
+        pathType: "Prefix"
       - backend:
           serviceName: visits-service
           servicePort: 8081
         path: /manage/health
+        pathType: "Prefix"
       - backend:
           serviceName: visits-service
           servicePort: 8081
         path: /manage/info
+        pathType: "Prefix"
 
 

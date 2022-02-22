@@ -11,11 +11,14 @@ spec:
           serviceName: ui-service
           servicePort: 80
         path: /
+        pathType: "Prefix"
       - backend:
           serviceName: ui-service
           servicePort: 8081
         path: /manage/health
+        pathType: "Prefix"
       - backend:
           serviceName: ui-service
           servicePort: 8081
         path: /manage/info
+        pathType: "Prefix"

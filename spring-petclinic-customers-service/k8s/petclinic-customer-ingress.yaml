@@ -11,15 +11,19 @@ spec:
           serviceName: customers-service
           servicePort: 80
         path: /customers-service
+        pathType: "Prefix"
       - backend:
           serviceName: customers-service
           servicePort: 80
         path: /api/customer/
+        pathType: "Prefix"
       - backend:
           serviceName: customers-service
           servicePort: 8081
         path: /manage/health
+        pathType: "Prefix"
       - backend:
           serviceName: customers-service
           servicePort: 8081
         path: /manage/info
+        pathType: "Prefix"

@@ -11,16 +11,20 @@ spec:
           serviceName: vets-service
           servicePort: 80
         path: /vets-service
+        pathType: "Prefix"
       - backend:
           serviceName: vets-service
           servicePort: 80
         path: /api/vet/**
+        pathType: "Prefix"
       - backend:
           serviceName: vets-service
           servicePort: 8081
         path: /manage/health
+        pathType: "Prefix"
       - backend:
           serviceName: vets-service
           servicePort: 8081
         path: /manage/info
+        pathType: "Prefix"
 

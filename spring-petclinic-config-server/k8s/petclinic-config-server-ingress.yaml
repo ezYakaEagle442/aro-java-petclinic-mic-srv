@@ -11,11 +11,14 @@ spec:
           serviceName: config-server
           servicePort: 8888
         path: /config-server
+        pathType: "Prefix"
       - backend:
           serviceName: config-server
           servicePort: 8081
         path: /manage/health
+        pathType: "Prefix"
       - backend:
           serviceName: config-server
           servicePort: 8081
         path: /manage/info
+        pathType: "Prefix"
