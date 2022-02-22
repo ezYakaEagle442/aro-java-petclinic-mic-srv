@@ -10,15 +10,19 @@ spec:
       - path: /admin-server
         pathType: "Prefix"
         backend:
-          serviceName: admin-server
-          servicePort: 9090
+          service: 
+            name: admin-server
+            port: 
+              number: 9090
       - path: /manage/health
         pathType: "Prefix"
         backend:
-          serviceName: admin-server
-          servicePort: 8081
+            name: admin-server
+            port: 
+              number: 8081
       - path: /manage/info
         pathType: "Prefix"
         backend:
-          serviceName: admin-server
-          servicePort: 8081
+            name: admin-server
+            port: 
+              number: 8081
