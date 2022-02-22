@@ -6,6 +6,7 @@
 - [Guide to OpenShift pipelines part 2](https://www.openshift.com/blog/guide-to-openshift-pipelines-part-2-using-source-2-image-build-in-tekton)
 - [Guide to OpenShift pipelines part4](https://www.openshift.com/blog/guide-to-openshift-pipelines-part-4-application-deployment-and-pipeline-orchestration-1)
 - [https://vincent.demeester.fr/articles/tekton-pipeline-without-pipeline-resources.html](https://vincent.demeester.fr/articles/tekton-pipeline-without-pipeline-resources.html)
+- [https://github.com/tektoncd/pipeline/tree/release-v0.22.x/examples/v1beta1](https://github.com/tektoncd/pipeline/tree/release-v0.22.x/examples/v1beta1)
 
 ## pre-req
 Check tkn cli is installed
@@ -82,7 +83,9 @@ oc create -f ./cnf/apply_manifest_task.yaml
 oc create -f ./cnf/update_deployment_task.yaml
 oc create -f ./cnf/persistent_volume_claim.yaml
 oc create -f ./cnf/storageclass-azurefile.yaml
+oc apply -f  ./cnf/check-mvn-output-Task.yaml
 oc apply -f  ./cnf/pipeline.yaml
+
 
 oc apply -f ./cnf/maven_config_map.yaml
 oc describe cm maven-settings
@@ -101,8 +104,6 @@ oc describe clustertask buildah
 oc describe clustertask maven
 oc describe clustertask buildah
 
-
-
 # Lets start a pipeline to build and deploy the petclinic admin-server backend application using tkn:
 tkn pipeline start build-and-deploy \
     -w name=shared-workspace,volumeClaimTemplateFile=./cnf/persistent_volume_claim.yaml \
@@ -116,7 +117,7 @@ tkn pipeline start build-and-deploy \
     -p FORMAT=oci \
     -p subdirectory=spring-petclinic-admin-server
     # --dry-run
-    
+
 #  get the route of the application by executing the following command and access the application
 oc get route pipelines-admin-server --template='http://{{.spec.host}}'
 
