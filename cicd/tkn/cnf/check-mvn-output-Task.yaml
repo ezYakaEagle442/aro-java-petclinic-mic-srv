@@ -5,7 +5,7 @@ metadata:
 spec:
   workspaces: # https://tekton.dev/vault/pipelines-v0.22.0/tasks/#specifying-workspaces
   - name: output
-    # mountPath: /workspace
+    mountPath: /workspace
   steps:
     - name: init
       image: bash:latest # mcr.microsoft.com/azure-cli:latest
@@ -45,7 +45,7 @@ spec:
       # sleep 10
       # timeout: 5s
       volumeMounts:
-        - mountPath: /workspace
+        - mountPath: /tmp
           name: tmp-vol
   volumes:
     - name: tmp-vol
