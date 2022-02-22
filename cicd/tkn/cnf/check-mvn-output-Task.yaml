@@ -3,8 +3,9 @@ kind: Task
 metadata:
   name: check-mvn-output
 spec:
-  workspaces:
+  workspaces: # https://tekton.dev/vault/pipelines-v0.22.0/tasks/#specifying-workspaces
   - name: shared-workspace
+    mountPath: /
   steps:
     - name: init
       image: bash:latest # mcr.microsoft.com/azure-cli:latest
@@ -17,6 +18,8 @@ spec:
         java -version
         ls -al /usr/lib/jvm/msopenjdk-11
         ls -al 
+
+        ls -al $(workspaces.shared-workspace.path)
 
         echo Checking Maven jar files in target output directory
 
@@ -41,3 +44,9 @@ spec:
         echo -----------------------------------  
       # sleep 10
       # timeout: 5s
+      volumeMounts:
+        - mountPath: /
+          name: tmp-vol
+  volumes:
+    - name: tmp-vol
+      emptyDir: {}
