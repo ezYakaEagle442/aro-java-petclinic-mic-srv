@@ -4,8 +4,8 @@ metadata:
   name: check-mvn-output
 spec:
   workspaces: # https://tekton.dev/vault/pipelines-v0.22.0/tasks/#specifying-workspaces
-  - name: shared-workspace
-    mountPath: /tmp
+  - name: output
+    mountPath: /workspace
   steps:
     - name: init
       image: bash:latest # mcr.microsoft.com/azure-cli:latest
@@ -15,11 +15,8 @@ spec:
         #!/usr/local/bin/bash
         echo -----------------------------------   
         pwd
-        java -version
-        ls -al /usr/lib/jvm/msopenjdk-11
         ls -al 
-
-        ls -al $(workspaces.shared-workspace.path)
+        ls -al $(workspaces.output.path)
 
         echo Checking Maven jar files in target output directory
 
@@ -45,7 +42,7 @@ spec:
       # sleep 10
       # timeout: 5s
       volumeMounts:
-        - mountPath: /
+        - mountPath: /workspace
           name: tmp-vol
   volumes:
     - name: tmp-vol
