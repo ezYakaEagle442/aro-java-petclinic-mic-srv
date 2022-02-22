@@ -71,6 +71,14 @@ spec:
       workspace: maven-settings      
     runAfter:
     - fetch-repository
+  - name: check-mvn
+    taskRef:
+      name: check-mvn-output
+    workspaces:
+    - name: output
+      workspace: shared-workspace
+    runAfter:
+    - maven-build    
   - name: build-image
     taskRef:
       name: buildah
@@ -88,7 +96,7 @@ spec:
     - name: source
       workspace: shared-workspace
     runAfter:
-    - maven-build
+    - check-mvn
   - name: apply-manifests
     taskRef:
       name: apply-manifests
@@ -96,7 +104,7 @@ spec:
     - name: source
       workspace: shared-workspace
     runAfter:
-    - build-image
+    - check-mvn
   - name: update-deployment
     taskRef:
       name: update-deployment
