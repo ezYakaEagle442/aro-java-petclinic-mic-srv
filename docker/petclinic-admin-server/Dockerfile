@@ -30,9 +30,10 @@ RUN echo -----------------------------------
 RUN ls -al 
 RUN ls -al /mnt
 RUN ls -al /usr
-RUN ls -al /usr/lib
+
 RUN ls -al home
 RUN ls -al /tmp
+RUN ls -al /tmp/postinstall
 RUN ls -al /var
 
 #RUN echo -----------------------------------
