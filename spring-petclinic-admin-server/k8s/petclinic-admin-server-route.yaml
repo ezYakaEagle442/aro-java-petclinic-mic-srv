@@ -3,12 +3,12 @@ kind: Route
 metadata:
   labels:
     app: admin-server
-  name: route-petclinic
+  name: route-admin
 spec:
   # host: admin-server # http://pipelines-hello-aro-<namespace>.apps.<domain>.northeurope.aroapp.io/
   port:
     targetPort: 8080-tcp
-  path: "/admin-server"
+  #path: "/admin-server"
   to:
     kind: Service
     name: admin-server
