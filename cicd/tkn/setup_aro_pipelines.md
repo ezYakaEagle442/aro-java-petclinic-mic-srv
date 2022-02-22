@@ -121,6 +121,71 @@ tkn pipeline start build-and-deploy \
     -p manifest_dir=spring-petclinic-admin-server/k8s
     # --dry-run
 
+tkn pipeline start build-and-deploy \
+    -w name=shared-workspace,volumeClaimTemplateFile=./cnf/persistent_volume_claim.yaml \
+    -w name=maven-settings,config=maven-settings \
+    -p deployment-name=ui-service \
+    -p git-url=https://github.com/ezYakaEagle442/aro-java-petclinic-mic-srv \
+    -p git-revision=master \
+    -p DOCKERFILE=docker/petclinic-api-gateway/Dockerfile \
+    -p CONTEXT=. \
+    -p IMAGE=image-registry.openshift-image-registry.svc:5000/$projectname/petclinic-ui \
+    -p FORMAT=oci \
+    -p subdirectory=spring-petclinic-api-gateway \
+    -p manifest_dir=spring-petclinic-api-gateway/k8s
+
+tkn pipeline start build-and-deploy \
+    -w name=shared-workspace,volumeClaimTemplateFile=./cnf/persistent_volume_claim.yaml \
+    -w name=maven-settings,config=maven-settings \
+    -p deployment-name=config-server \
+    -p git-url=https://github.com/ezYakaEagle442/aro-java-petclinic-mic-srv \
+    -p git-revision=master \
+    -p DOCKERFILE=docker/petclinic-config-server/Dockerfile \
+    -p CONTEXT=. \
+    -p IMAGE=image-registry.openshift-image-registry.svc:5000/$projectname/petclinic-config-server \
+    -p FORMAT=oci \
+    -p subdirectory=spring-petclinic-config-server \
+    -p manifest_dir=spring-petclinic-config-server/k8s
+
+tkn pipeline start build-and-deploy \
+    -w name=shared-workspace,volumeClaimTemplateFile=./cnf/persistent_volume_claim.yaml \
+    -w name=maven-settings,config=maven-settings \
+    -p deployment-name=customers-service \
+    -p git-url=https://github.com/ezYakaEagle442/aro-java-petclinic-mic-srv \
+    -p git-revision=master \
+    -p DOCKERFILE=docker/petclinic-customers-service/Dockerfile \
+    -p CONTEXT=. \
+    -p IMAGE=image-registry.openshift-image-registry.svc:5000/$projectname/petclinic-customers-service \
+    -p FORMAT=oci \
+    -p subdirectory=spring-petclinic-customers-service \
+    -p manifest_dir=spring-petclinic-customers-service/k8s
+
+tkn pipeline start build-and-deploy \
+    -w name=shared-workspace,volumeClaimTemplateFile=./cnf/persistent_volume_claim.yaml \
+    -w name=maven-settings,config=maven-settings \
+    -p deployment-name=vets-service \
+    -p git-url=https://github.com/ezYakaEagle442/aro-java-petclinic-mic-srv \
+    -p git-revision=master \
+    -p DOCKERFILE=docker/petclinic-vets-service/Dockerfile \
+    -p CONTEXT=. \
+    -p IMAGE=image-registry.openshift-image-registry.svc:5000/$projectname/petclinic-vets-service \
+    -p FORMAT=oci \
+    -p subdirectory=spring-petclinic-vets-service \
+    -p manifest_dir=spring-petclinic-vets-service/k8s
+
+tkn pipeline start build-and-deploy \
+    -w name=shared-workspace,volumeClaimTemplateFile=./cnf/persistent_volume_claim.yaml \
+    -w name=maven-settings,config=maven-settings \
+    -p deployment-name=vets-service \
+    -p git-url=https://github.com/ezYakaEagle442/aro-java-petclinic-mic-srv \
+    -p git-revision=master \
+    -p DOCKERFILE=docker/petclinic-visits-service/Dockerfile \
+    -p CONTEXT=. \
+    -p IMAGE=image-registry.openshift-image-registry.svc:5000/$projectname/petclinic-visits-service \
+    -p FORMAT=oci \
+    -p subdirectory=spring-petclinic-visits-service \
+    -p manifest_dir=spring-petclinic-visits-service/k8s
+
 # Debug/Troubleshoot:
 
 oc describe task apply-manifests
