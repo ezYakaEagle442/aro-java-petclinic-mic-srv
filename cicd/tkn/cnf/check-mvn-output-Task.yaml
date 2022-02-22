@@ -33,33 +33,33 @@ spec:
         echo -----------------------------------
 
         echo -----------------------------------
-        echo "petclinic-api-gateway"
-        ls -al "petclinic-api-gateway"
-        ls -al "petclinic-api-gateway/target"
+        echo "spring-petclinic-api-gateway"
+        ls -al "spring-petclinic-api-gateway"
+        ls -al "spring-petclinic-api-gateway/target"
         echo -----------------------------------
 
         echo -----------------------------------
-        echo "petclinic-config-server"
-        ls -al "petclinic-config-server"
-        ls -al "petclinic-config-server/target"
+        echo "spring-petclinic-config-server"
+        ls -al "spring-petclinic-config-server"
+        ls -al "spring-petclinic-config-server/target"
         echo -----------------------------------
 
         echo -----------------------------------
-        echo "petclinic-customers-service"
-        ls -al "petclinic-customers-service"
-        ls -al "petclinic-customers-service/target"
+        echo "spring-petclinic-customers-service"
+        ls -al "spring-petclinic-customers-service"
+        ls -al "spring-petclinic-customers-service/target"
         echo -----------------------------------
 
         echo -----------------------------------
-        echo "petclinic-vets-service"
-        ls -al "petclinic-vets-service"
-        ls -al "petclinic-vets-service/target"
+        echo "spring-petclinic-vets-service"
+        ls -al "spring-petclinic-vets-service"
+        ls -al "spring-petclinic-vets-service/target"
         echo -----------------------------------
 
         echo -----------------------------------
-        echo "petclinic-visits-service"
-        ls -al "petclinic-visits-service"
-        ls -al "petclinic-visits-service/target"
+        echo "spring-petclinic-visits-service"
+        ls -al "spring-petclinic-visits-service"
+        ls -al "spring-petclinic-visits-service/target"
         echo -----------------------------------
 
         echo -----------------------------------  
