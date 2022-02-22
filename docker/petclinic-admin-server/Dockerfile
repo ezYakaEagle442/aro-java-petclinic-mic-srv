@@ -21,16 +21,27 @@ LABEL Description="PetClinic admin-server: Java Spring Boot microservice built f
 
 RUN java -version
 RUN ls -al /usr/lib/jvm/msopenjdk-11
+
+RUN echo -----------------------------------
+RUN echo workingDir 
 RUN pwd
+RUN echo -----------------------------------
+
 RUN ls -al 
 
-RUN ls -al /workspace
-RUN ls -al "/workspace/spring-petclinic-admin-server"
-RUN ls -al "/workspace/spring-petclinic-admin-server/target"
+RUN echo -----------------------------------
+RUN echo listing /var/lib/containers
+RUN ls -al /var/lib/containers
+RUN echo -----------------------------------
+
+RUN echo -----------------------------------
+RUN ls -al "spring-petclinic-admin-server"
+RUN ls -al "spring-petclinic-admin-server/target"
+RUN echo -----------------------------------
 
 RUN mkdir /tmp/app
 WORKDIR /tmp/app
-COPY "/workspace/spring-petclinic-admin-server/target/*.jar" /tmp/app/app.jar
+COPY "spring-petclinic-admin-server/target/*.jar" /tmp/app/app.jar
 
 # RUN yum install maven -y
 
