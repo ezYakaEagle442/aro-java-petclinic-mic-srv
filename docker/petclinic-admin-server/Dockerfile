@@ -23,12 +23,14 @@ RUN java -version
 RUN ls -al /usr/lib/jvm/msopenjdk-11
 RUN pwd
 RUN ls -al 
-RUN ls -al "./spring-petclinic-admin-server"
-RUN ls -al "./spring-petclinic-admin-server/target"
+
+RUN ls -al /workspace
+RUN ls -al "/workspace/spring-petclinic-admin-server"
+RUN ls -al "/workspace/spring-petclinic-admin-server/target"
 
 RUN mkdir /tmp/app
 WORKDIR /tmp/app
-COPY "./spring-petclinic-admin-server/target/*.jar" /tmp/app/app.jar
+COPY "/workspace/spring-petclinic-admin-server/target/*.jar" /tmp/app/app.jar
 
 # RUN yum install maven -y
 
