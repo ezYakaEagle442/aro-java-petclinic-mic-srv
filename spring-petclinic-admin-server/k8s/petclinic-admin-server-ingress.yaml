@@ -7,18 +7,18 @@ spec:
   - host: route-ui-petclinic.apps.gbbappinno.northeurope.aroapp.io
     http:
       paths:
-      - backend:
+      - path: /admin-server
+        pathType: "Prefix"
+        backend:
           serviceName: admin-server
           servicePort: 9090
-        path: /admin-server
+      - path: /manage/health
         pathType: "Prefix"
-      - backend:
+        backend:
           serviceName: admin-server
           servicePort: 8081
-        path: /manage/health
+      - path: /manage/info
         pathType: "Prefix"
-      - backend:
+        backend:
           serviceName: admin-server
           servicePort: 8081
-        path: /manage/info
-        pathType: "Prefix"
