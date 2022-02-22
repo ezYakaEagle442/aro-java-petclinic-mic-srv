@@ -118,6 +118,10 @@ tkn pipeline start build-and-deploy \
     -p subdirectory=spring-petclinic-admin-server
     # --dry-run
 
+# Debug/Troubleshoot:
+tkn task start check-mvn-output \
+    -w name=shared-workspace,volumeClaimTemplateFile=./cnf/persistent_volume_claim.yaml
+
 #  get the route of the application by executing the following command and access the application
 oc get route pipelines-admin-server --template='http://{{.spec.host}}'
 
