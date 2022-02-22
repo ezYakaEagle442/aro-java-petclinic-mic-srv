@@ -9,6 +9,10 @@ metadata:
 spec:
   ports:
   - protocol: TCP
+    port: 9090
+    targetPort: 8080  
+    name: http-9090  
+  - protocol: TCP
     port: 8080
     targetPort: 8080  
     name: http-8080
