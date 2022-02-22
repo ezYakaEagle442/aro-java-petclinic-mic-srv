@@ -10,7 +10,7 @@ spec:
     - name: init
       image: bash:latest # mcr.microsoft.com/azure-cli:latest
       # command: ["/usr/local/bin/bash", "-c"] # which bash ==> /usr/local/bin/bash
-      workingDir: /workspace/output
+      workingDir: /workspace/
       script: | 
         #!/usr/local/bin/bash
         echo -----------------------------------   
@@ -21,25 +21,28 @@ spec:
         echo listing workspaces.output.path
         ls -al $(workspaces.output.path)
 
+        echo listing workspaces.output.path OUTPUT
+        ls -al $(workspaces.output.path)/output
+
         echo Checking Maven jar files in target output directory
 
-        ls -al "./spring-petclinic-admin-server"
-        ls -al "./spring-petclinic-admin-server/target"
+        ls -al "$(workspaces.output.path)/output/spring-petclinic-admin-server"
+        ls -al "$(workspaces.output.path)/output/spring-petclinic-admin-server/target"
 
-        ls -al "./petclinic-api-gateway"
-        ls -al "./petclinic-api-gateway/target"
+        ls -al "$(workspaces.output.path)/output/petclinic-api-gateway"
+        ls -al "$(workspaces.output.path)/output/petclinic-api-gateway/target"
 
-        ls -al "./petclinic-config-server"
-        ls -al "./petclinic-config-server/target"
+        ls -al "$(workspaces.output.path)/output/petclinic-config-server"
+        ls -al "$(workspaces.output.path)/output/petclinic-config-server/target"
 
-        ls -al "./petclinic-customers-service"
-        ls -al "./petclinic-customers-service/target"
+        ls -al "$(workspaces.output.path)/output/petclinic-customers-service"
+        ls -al "$(workspaces.output.path)/output/petclinic-customers-service/target"
 
-        ls -al "./petclinic-vets-service"
-        ls -al "./petclinic-vets-service/target"
+        ls -al "$(workspaces.output.path)/output/petclinic-vets-service"
+        ls -al "$(workspaces.output.path)/output/petclinic-vets-service/target"
 
-        ls -al "./petclinic-visits-service"
-        ls -al "./petclinic-visits-service/target"
+        ls -al "$(workspaces.output.path)/output/petclinic-visits-service"
+        ls -al "$(workspaces.output.path)/output/petclinic-visits-service/target"
 
         echo -----------------------------------  
       # sleep 10
