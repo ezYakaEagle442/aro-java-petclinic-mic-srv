@@ -5,7 +5,7 @@ metadata:
 spec:
   workspaces: # https://tekton.dev/vault/pipelines-v0.22.0/tasks/#specifying-workspaces
   - name: shared-workspace
-    mountPath: /
+    mountPath: /tmp
   steps:
     - name: init
       image: bash:latest # mcr.microsoft.com/azure-cli:latest
