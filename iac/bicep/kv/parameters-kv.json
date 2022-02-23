@@ -5,6 +5,9 @@
       "appName": {
         "value": "petcliaro"
       },
+      "kvName": {
+        "value": "kv-petclinic-aro"
+      },      
       "setKVAccessPolicies": {
         "value": false
       }
