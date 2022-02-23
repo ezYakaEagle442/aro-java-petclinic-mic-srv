@@ -6,6 +6,9 @@
 This microservices branch was initially derived from [AngularJS version](https://github.com/spring-petclinic/spring-petclinic-angular1) to demonstrate how to split sample Spring application into [microservices](http://www.martinfowler.com/articles/microservices.html).
 To achieve that goal we use IaC with Azure Bicep, MS build of OpenJDK 11, GitHub Actions, Azure Container Registry, Azure AD Workload Identity, Azure Key Vault, Open Service Mesh (OSM), Azure Database for MySQL
 
+## Create Infra
+
+See [iac/bicep/README.md](iac/bicep/README.md)
 
 ## Starting services locally without Docker
 

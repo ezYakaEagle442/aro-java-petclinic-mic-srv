@@ -1,8 +1,5 @@
 # ARO
 
-```sh
-
-```
 
 ```sh
 aro_sp_password=$(az ad sp create-for-rbac --name $appName-aro --role contributor --query password -o tsv)
@@ -34,6 +31,9 @@ az deployment group create --name iac-101-kv -f ./kv/kv.bicep -g rg-iac-kv \
 
 # /!\ In ./aro/parameters.json; replace the here uner parameters with your values :
 # clientObjectId, clientSecret, aroRpObjectId, pullSecret, domain
+
+envsubst < $(inputs.params.manifest_dir)/$i > $(inputs.params.manifest_dir)/deploy/$i
+
 az deployment group create --name iac-101-aro -f ./aro/main.bicep -g rg-iac-aro-petclinic-mic-srv \
     --parameters @./aro/parameters.json
     
