@@ -3,11 +3,11 @@ kind: Route
 metadata:
   labels:
     app: ui-service
-  name: route-ui
+  name: ui
 spec:
   port:
     targetPort: http-8080
   to:
     kind: Service
     name: ui-service
-    weight: 100 
+    weight: 100
