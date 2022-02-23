@@ -2,6 +2,7 @@
 
 
 ```sh
+appName="petcliaro"
 aro_sp_password=$(az ad sp create-for-rbac --name $appName-aro --role contributor --query password -o tsv)
 echo $aro_sp_password > aro_spp.txt
 echo "Service Principal Password saved to ./aro_spp.txt IMPORTANT Keep your password ..." 
@@ -16,41 +17,51 @@ az ad sp show --id $aro_sp_id
 
 clientObjectId="$(az ad sp list --filter "AppId eq '$aro_sp_id'" --query "[?appId=='$aro_sp_id'].objectId" -o tsv)"
 
-aroRpObjectId="$(az ad sp list --filter "displayname eq 'Azure Red Hat OpenShift RP'" --query "[?appDisplayName=='Azure Red Hat OpenShift RP'].objectId" -o tsv)"
+# /!\ This query returns 3 Ids ....
+aroRpObjectId="$(az ad sp list --filter "displayname eq 'Azure Red Hat OpenShift RP'" --query "[?appDisplayName=='Azure Red Hat OpenShift RP'].objectId" -o tsv | head -1)"
 
+az ad sp list --filter "displayname eq 'Azure Red Hat OpenShift RP'" --query "[?appDisplayName=='Azure Red Hat OpenShift RP'].objectId" -o tsv |  
+    while IFS= read -r line
+    do
+        echo "$line" &
+    done
+
+# This snippet stores the 3rd & last SPN
+ for spn in `az ad sp list --filter "displayname eq 'Azure Red Hat OpenShift RP'" --query "[?appDisplayName=='Azure Red Hat OpenShift RP'].objectId" -o tsv `
+  do
+	  echo "$spn"
+      aroRpObjectId="$spn"
+  done
 
 
 # az account list-locations : swedencentral | francecentral | northeurope | westeurope | eastus2
-location="swedencentral" 
+location="northeurope" 
 
 az group create --name rg-iac-kv --location $location
 az group create --name rg-iac-aro-petclinic-mic-srv --location $location
 
-az deployment group create --name iac-101-kv -f ./kv/kv.bicep -g rg-iac-kv \
+az deployment group create --name iac-101-kv -f iac/bicep/kv/kv.bicep -g rg-iac-kv \
     --parameters @iac/bicep/kv/parameters-kv.json
 
-# /!\ In ./aro/parameters.json; replace the here uner parameters with your values :
-# clientObjectId, clientSecret, aroRpObjectId, pullSecret, domain
+# /!\ In ./aro/parameters.json; envsubst will replace the here uner parameters with your values :
+# clientId, clientObjectId, clientSecret, aroRpObjectId, pullSecret
+export clientId=$aro_sp_id
 export clientObjectId=$clientObjectId
 export clientSecret=$aro_sp_password
 export aroRpObjectId=$aroRpObjectId
-export pull_secret=`cat pull-secret.txt`
+
+
+# /!\ Bicep will complain about the pullSecret as it has quotes “ and curly brackets which need to be escaped …
+cat pull-secret.txt | sed 's/"/\\"/g' > pull-secret-escaped.txt
+export pullSecret=`cat pull-secret-escaped.txt`
 
 envsubst < iac/bicep/aro/parameters.json > ../parameters-aro.json
 cat ../parameters-aro.json
 
-az deployment group create --name iac-101-aro -f ./aro/main.bicep -g rg-iac-aro-petclinic-mic-srv \
-    --parameters @../aro/parameters.json
+
+az deployment group create --name iac-101-aro -f iac/bicep/aro/main.bicep -g rg-iac-aro-petclinic-mic-srv \
+    --parameters @../parameters-aro.json
     
-az deployment group create --name iac-101-aro \
-    -f ./aro/main.bicep \
-    -g $aro_rg_name \
-    --parameters clientId=$aro_sp_id \
-        clientObjectId=$clientObjectId \
-        clientSecret=$aro_sp_password \
-        aroRpObjectId=$aroRpObjectId \
-        pullSecret=$pull_secret \
-        domain=openshiftrocks
 ```
 ## Connect to the Cluster
 
