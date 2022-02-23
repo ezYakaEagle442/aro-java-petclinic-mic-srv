@@ -14,8 +14,8 @@ param administratorLogin string = 'mys_adm'
 param administratorLoginPassword string
 
 var serverName = '${appName}-mysql-server'
-var databaseSkuName = 'GP_Gen5_2'
-var databaseSkuTier = 'GeneralPurpose'
+var databaseSkuName = 'Standard_B1ms ' //  'GP_Gen5_2' for single server
+var databaseSkuTier = 'Burstable' // 'GeneralPurpose'
 var mySqlVersion = '5.7' // https://docs.microsoft.com/en-us/azure/mysql/concepts-supported-versions
 
 /* 
