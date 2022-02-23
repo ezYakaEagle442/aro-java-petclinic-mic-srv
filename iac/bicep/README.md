@@ -20,19 +20,15 @@ clientObjectId="$(az ad sp list --filter "AppId eq '$aro_sp_id'" --query "[?appI
 # /!\ This query returns 3 Ids ....
 aroRpObjectId="$(az ad sp list --filter "displayname eq 'Azure Red Hat OpenShift RP'" --query "[?appDisplayName=='Azure Red Hat OpenShift RP'].objectId" -o tsv | head -1)"
 
-az ad sp list --filter "displayname eq 'Azure Red Hat OpenShift RP'" --query "[?appDisplayName=='Azure Red Hat OpenShift RP'].objectId" -o tsv |  
-    while IFS= read -r line
-    do
-        echo "$line" &
-    done
+# The one below is correct and returns 1 & only 1 ID
+tenantId=$(az account show --query tenantId -o tsv)
+aroRpObjectId="$(az ad sp list --filter "displayname eq 'Azure Red Hat OpenShift RP'" --query "[?appDisplayName=='Azure Red Hat OpenShift RP']" --query "[?appOwnerTenantId=='$tenantId'].objectId" -o tsv | head -1)"
 
-# This snippet stores the 3rd & last SPN
- for spn in `az ad sp list --filter "displayname eq 'Azure Red Hat OpenShift RP'" --query "[?appDisplayName=='Azure Red Hat OpenShift RP'].objectId" -o tsv `
-  do
-	  echo "$spn"
-      aroRpObjectId="$spn"
-  done
-
+az ad sp list --filter "displayname eq 'Azure Red Hat OpenShift RP'" --query "[?appDisplayName=='Azure Red Hat OpenShift RP']" --query "[?appOwnerTenantId=='$tenantId'].objectId" -o tsv |  head -1 |
+while IFS= read -r line
+do
+    echo "$line" &
+done
 
 # az account list-locations : swedencentral | francecentral | northeurope | westeurope | eastus2
 location="northeurope" 
