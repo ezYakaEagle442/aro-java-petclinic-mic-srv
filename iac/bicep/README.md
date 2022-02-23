@@ -18,7 +18,7 @@ clientObjectId="$(az ad sp list --filter "AppId eq '$aro_sp_id'" --query "[?appI
 
 aroRpObjectId="$(az ad sp list --filter "displayname eq 'Azure Red Hat OpenShift RP'" --query "[?appDisplayName=='Azure Red Hat OpenShift RP'].objectId" -o tsv)"
 
-pull_secret=`cat pull-secret.txt`
+
 
 # az account list-locations : swedencentral | francecentral | northeurope | westeurope | eastus2
 location="swedencentral" 
@@ -27,15 +27,20 @@ az group create --name rg-iac-kv --location $location
 az group create --name rg-iac-aro-petclinic-mic-srv --location $location
 
 az deployment group create --name iac-101-kv -f ./kv/kv.bicep -g rg-iac-kv \
-    --parameters @./kv/parameters-kv.json
+    --parameters @iac/bicep/kv/parameters-kv.json
 
 # /!\ In ./aro/parameters.json; replace the here uner parameters with your values :
 # clientObjectId, clientSecret, aroRpObjectId, pullSecret, domain
+export clientObjectId=$clientObjectId
+export clientSecret=$aro_sp_password
+export aroRpObjectId=$aroRpObjectId
+export pull_secret=`cat pull-secret.txt`
 
-envsubst < $(inputs.params.manifest_dir)/$i > $(inputs.params.manifest_dir)/deploy/$i
+envsubst < iac/bicep/aro/parameters.json > ../parameters-aro.json
+cat ../parameters-aro.json
 
 az deployment group create --name iac-101-aro -f ./aro/main.bicep -g rg-iac-aro-petclinic-mic-srv \
-    --parameters @./aro/parameters.json
+    --parameters @../aro/parameters.json
     
 az deployment group create --name iac-101-aro \
     -f ./aro/main.bicep \
