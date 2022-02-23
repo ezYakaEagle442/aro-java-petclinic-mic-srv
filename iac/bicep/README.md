@@ -1,6 +1,10 @@
 # ARO
 
 ```sh
+
+```
+
+```sh
 aro_sp_password=$(az ad sp create-for-rbac --name $appName-aro --role contributor --query password -o tsv)
 echo $aro_sp_password > aro_spp.txt
 echo "Service Principal Password saved to ./aro_spp.txt IMPORTANT Keep your password ..." 
@@ -19,6 +23,20 @@ aroRpObjectId="$(az ad sp list --filter "displayname eq 'Azure Red Hat OpenShift
 
 pull_secret=`cat pull-secret.txt`
 
+# az account list-locations : swedencentral | francecentral | northeurope | westeurope | eastus2
+location="swedencentral" 
+
+az group create --name rg-iac-kv --location $location
+az group create --name rg-iac-aro-petclinic-mic-srv --location $location
+
+az deployment group create --name iac-101-kv -f ./kv/kv.bicep -g rg-iac-kv \
+    --parameters @./kv/parameters-kv.json
+
+# /!\ In ./aro/parameters.json; replace the here uner parameters with your values :
+# clientObjectId, clientSecret, aroRpObjectId, pullSecret, domain
+az deployment group create --name iac-101-aro -f ./aro/main.bicep -g rg-iac-aro-petclinic-mic-srv \
+    --parameters @./aro/parameters.json
+    
 az deployment group create --name iac-101-aro \
     -f ./aro/main.bicep \
     -g $aro_rg_name \
