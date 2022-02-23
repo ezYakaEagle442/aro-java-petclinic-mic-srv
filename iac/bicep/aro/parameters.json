@@ -12,7 +12,7 @@
         "value": "rg-petclinic-aro"
       },      
       "location": {
-        "value": "swedencentral"
+        "value": "northeurope"
       },       
       "clientId": {
         "value": "${clientId}"

@@ -6,13 +6,13 @@
         "value": "petcliaro"
       },
       "location": {
-        "value": "swedencentral"
+        "value": "northeurope"
       },       
       "administratorLogin": {
         "value": "mys_adm"
       },
       "administratorLoginPassword": {
-        "value": "istrator"
+        "value": "IsTrator42!"
       }      
     }
   }

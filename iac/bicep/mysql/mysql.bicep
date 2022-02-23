@@ -13,13 +13,15 @@ param administratorLogin string = 'mys_adm'
 @description('The MySQL DB Admin Password.')
 param administratorLoginPassword string
 
-var serverName = '${appName}-server'
-var databaseSkuFamily = 'Gen5'
+var serverName = '${appName}-mysql-server'
 var databaseSkuName = 'GP_Gen5_2'
 var databaseSkuTier = 'GeneralPurpose'
+var mySqlVersion = '5.7' // https://docs.microsoft.com/en-us/azure/mysql/concepts-supported-versions
+
+/* 
+var databaseSkuFamily = 'Gen5'
 var databaseSkuSizeMB = 51200
 var databaseSkucapacity = 2
-var mySqlVersion = '5.7' // https://docs.microsoft.com/en-us/azure/mysql/concepts-supported-versions
 
 resource server 'Microsoft.DBforMySQL/servers@2017-12-01' = {
   location: location
@@ -42,5 +44,31 @@ resource server 'Microsoft.DBforMySQL/servers@2017-12-01' = {
       geoRedundantBackup: 'Disabled'
     }
     sslEnforcement: 'Disabled'
+  }
+}
+*/
+
+resource mysqlserver 'Microsoft.DBforMySQL/flexibleServers@2021-05-01' = {
+  name: serverName
+  location: location
+
+  sku: {
+    name: databaseSkuName
+    tier: databaseSkuTier
+  }
+  properties: {
+    administratorLogin: administratorLogin
+    administratorLoginPassword: administratorLoginPassword
+    availabilityZone: '1'
+    backup: {
+      backupRetentionDays: 7
+      geoRedundantBackup: 'Disabled'
+    }
+    createMode: 'Default'
+    highAvailability: {
+      mode: 'Disabled'
+    }
+    replicationRole: 'None'
+    version: mySqlVersion
   }
 }
