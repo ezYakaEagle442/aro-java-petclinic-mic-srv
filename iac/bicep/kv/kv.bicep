@@ -16,8 +16,8 @@ param kvName string = 'kv-${appName}'
 
 param setKVAccessPolicies bool = false
 
-@description('AKS Identity')
-param AKSIdentity string
+@description('ARO SPN object ID')
+param clientObjectId string
 
 @description('The KV location')
 param location string = resourceGroup().location
@@ -79,7 +79,7 @@ resource kv 'Microsoft.KeyVault/vaults@2021-06-01-preview' = {
 output keyVault object = kv
 
 
-// TODO : from Pipeline get aksIdentity objectId
+// TODO : from Pipeline get ARO SPN objectId
 // https://codingwithtaz.blog/2021/09/08/azure-pipelines-deploy-aks-with-bicep/
 // create accessPolicies https://docs.microsoft.com/en-us/azure/templates/microsoft.keyvault/vaults/accesspolicies?tabs=bicep
 // /!\ Preview feature: When enableRbacAuthorization is true in KV, the key vault will use RBAC for authorization of data actions, and the access policies specified in vault properties will be ignored
@@ -89,7 +89,7 @@ resource kvAccessPolicies 'Microsoft.KeyVault/vaults/accessPolicies@2021-06-01-p
   properties: {
     accessPolicies: [
       {
-        objectId: AKSIdentity
+        objectId: clientObjectId
         tenantId: tenantId
         permissions: {
           certificates: [
