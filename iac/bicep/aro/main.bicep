@@ -20,12 +20,37 @@ param vnetCidr string = '172.32.0.0/21'
 param masterSubnetCidr string = '172.32.1.0/24'
 param workerSubnetCidr string = '172.32.2.0/24'
 
+@maxLength(24)
+@description('The name of the KV, must be UNIQUE.  A vault name must be between 3-24 alphanumeric characters.')
+param kvName string // = 'kv-${appName}'
+
+@description('The name of the KV RG')
+param kvRGName string
+
+@description('Is KV Network access public ?')
+@allowed([
+  'enabled'
+  'disabled'
+])
+param publicNetworkAccess string = 'enabled'
+
+@description('The KV SKU name')
+@allowed([
+  'premium'
+  'standard'
+])
+param skuName string = 'standard'
+
+@description('The Azure Active Directory tenant ID that should be used for authenticating requests to the Key Vault.')
+param tenantId string = subscription().tenantId
+
 @description('The MySQL DB Admin Login.')
 param administratorLogin string = 'mys_adm'
 
 @secure()
 @description('The MySQL DB Admin Password.')
 param administratorLoginPassword string
+
 
 module vnet 'vnet.bicep' = {
   name: 'vnet-aro'
@@ -43,10 +68,10 @@ module vnetRoleAssignments 'roleAssignments.bicep' = {
     vnetId: vnet.outputs.vnetId
     clientObjectId: clientObjectId
     aroRpObjectId: aroRpObjectId
+    kvName: kvName
+    kvRGName: kvRGName
+    kvRoleType: 'KeyVaultReader'    
   }
-  dependsOn: [
-    vnet
-  ]  
 }
 
 module aro 'aro.bicep' = {
@@ -74,4 +99,32 @@ module mysql '../mysql/mysql.bicep' = {
     administratorLogin: administratorLogin
     administratorLoginPassword: administratorLoginPassword
   }
+}
+
+
+var vNetRules = [
+  {
+    'id': vnet.outputs.workerSubnetId
+    'ignoreMissingVnetServiceEndpoint': false
+  }
+]
+
+// At this stage, must be configured: networkAcls/virtualNetworkRules to allow to ARO subnetID
+module KeyVault '../kv/kv.bicep'= {
+  name: kvName
+  scope: resourceGroup(kvRGName)
+  params: {
+    location: location
+    skuName: skuName
+    tenantId: tenantId
+    publicNetworkAccess: publicNetworkAccess
+    vNetRules: vNetRules
+    clientObjectId: clientObjectId
+    setKVAccessPolicies: true
+  }
+}
+
+resource kv 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = {
+  scope: resourceGroup(kvRGName)
+  name: kvName
 }
