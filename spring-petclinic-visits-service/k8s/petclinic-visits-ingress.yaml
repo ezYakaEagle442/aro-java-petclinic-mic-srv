@@ -4,28 +4,34 @@ metadata:
   name: ing-petclinic-visits
 spec:
   rules:
-  - host: route-ui-petclinic.apps.gbbappinno.northeurope.aroapp.io
+  - host: $ING_HOST
     http:
       paths:
-      - backend:
-          serviceName: visits-service
-          servicePort: 80
-        path: /visits-service
+      - path: /visits-service
         pathType: "Prefix"
-      - backend:
-          serviceName: visits-service
-          servicePort: 80
-        path: /api/visit/
+        backend:
+          service:
+            name: visits-service
+            port: 
+              number: 80        
+      - path: /api/visit/
         pathType: "Prefix"
-      - backend:
-          serviceName: visits-service
-          servicePort: 8081
-        path: /manage/health
+        backend:
+          service:
+            name: visits-service
+            port: 
+              number: 80
+      - path: /visits/manage/health
         pathType: "Prefix"
-      - backend:
-          serviceName: visits-service
-          servicePort: 8081
-        path: /manage/info
+        backend:
+          service:
+            name: visits-service
+            port: 
+              number: 8081
+      - path: /visits/manage/info
         pathType: "Prefix"
-
-
+        backend:
+          service:
+            name: visits-service
+            port: 
+              number: 8081

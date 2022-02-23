@@ -4,27 +4,35 @@ metadata:
   name: ing-petclinic-vets
 spec:
   rules:
-  - host: route-ui-petclinic.apps.gbbappinno.northeurope.aroapp.io
+  - host: $ING_HOST
     http:
       paths:
-      - backend:
-          serviceName: vets-service
-          servicePort: 80
-        path: /vets-service
+      - path: /vets-service
         pathType: "Prefix"
-      - backend:
-          serviceName: vets-service
-          servicePort: 80
-        path: /api/vet/**
+        backend:
+          service:
+            name: vets-service
+            port: 
+              number: 80
+      - path: /api/vet/
         pathType: "Prefix"
-      - backend:
-          serviceName: vets-service
-          servicePort: 8081
-        path: /manage/health
+        backend:
+          service:
+            name: vets-service
+            port: 
+              number: 80
+      - path: /vets/manage/health
         pathType: "Prefix"
-      - backend:
-          serviceName: vets-service
-          servicePort: 8081
-        path: /manage/info
+        backend:
+          service:
+            name: vets-service
+            port: 
+              number: 8081
+      - path: /vets/manage/info
         pathType: "Prefix"
+        backend:
+          service:
+            name: vets-service
+            port: 
+              number: 8081
 

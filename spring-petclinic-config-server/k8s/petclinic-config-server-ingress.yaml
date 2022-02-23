@@ -4,21 +4,27 @@ metadata:
   name: ing-petclinic-config-server
 spec:
   rules:
-  - host: route-ui-petclinic.apps.gbbappinno.northeurope.aroapp.io
+  - host: $ING_HOST
     http:
       paths:
-      - backend:
-          serviceName: config-server
-          servicePort: 8888
-        path: /config-server
+      - path: /config-server
+        pathType: "Prefix"      
+        backend:
+          service:
+            name: config-server
+            port: 
+              number: 8888        
+      - path: /config/manage/health
         pathType: "Prefix"
-      - backend:
-          serviceName: config-server
-          servicePort: 8081
-        path: /manage/health
+        backend:
+          service:
+            name: config-server
+            port: 
+              number: 8081
+      - path: /config/manage/info
         pathType: "Prefix"
-      - backend:
-          serviceName: config-server
-          servicePort: 8081
-        path: /manage/info
-        pathType: "Prefix"
+        backend:
+          service:
+            name: config-server
+            port: 
+              number: 8081

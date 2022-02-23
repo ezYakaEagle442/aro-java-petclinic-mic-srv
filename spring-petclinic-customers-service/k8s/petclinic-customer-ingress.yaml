@@ -4,26 +4,55 @@ metadata:
   name: ing-petclinic-customers
 spec:
   rules:
-  - host: route-ui-petclinic.apps.gbbappinno.northeurope.aroapp.io
+  - host: $ING_HOST
     http:
       paths:
-      - backend:
-          serviceName: customers-service
-          servicePort: 80
-        path: /customers-service
+      - path: /customers-service
+        pathType: "Prefix"      
+        backend:
+          service:
+            name: customers-service
+            port: 
+              number: 80
+      - path: /api/customer/
+        pathType: "Prefix"      
+        backend:
+            service:
+              name: customers-service
+              port: 
+                number: 80
+      - path: /api/gateway/owners/
+        pathType: "Prefix"      
+        backend:
+            service:
+              name: customers-service
+              port: 
+                number: 80  
+      - path: /api/owners/
+        pathType: "Prefix"      
+        backend:
+            service:
+              name: customers-service
+              port: 
+                number: 80
+      - path: /owners/
+        pathType: "Prefix"      
+        backend:
+            service:
+              name: customers-service
+              port: 
+                number: 80                         
+      - path: /customer/manage/health
         pathType: "Prefix"
-      - backend:
-          serviceName: customers-service
-          servicePort: 80
-        path: /api/customer/
+        backend:
+          service:
+            name: customers-service
+            port: 
+              number: 8081
+      - path: /customer/manage/info
         pathType: "Prefix"
-      - backend:
-          serviceName: customers-service
-          servicePort: 8081
-        path: /manage/health
-        pathType: "Prefix"
-      - backend:
-          serviceName: customers-service
-          servicePort: 8081
-        path: /manage/info
-        pathType: "Prefix"
+        backend:
+          service:
+            name: customers-service
+            port: 
+              number: 8081

@@ -4,7 +4,7 @@ metadata:
   name: ing-petclinic-admin-server
 spec:
   rules:
-  - host: route-ui-petclinic.apps.gbbappinno.northeurope.aroapp.io
+  - host: $ING_HOST
     http:
       paths:
       - path: /admin-server
@@ -14,14 +14,14 @@ spec:
             name: admin-server
             port: 
               number: 9090
-      - path: /manage/health
+      - path: /admin/manage/health
         pathType: "Prefix"
         backend:
           service:
             name: admin-server
             port: 
               number: 8081
-      - path: /manage/info
+      - path: /admin/manage/info
         pathType: "Prefix"
         backend:
           service:

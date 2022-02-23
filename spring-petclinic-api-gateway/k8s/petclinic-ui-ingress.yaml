@@ -4,21 +4,27 @@ metadata:
   name: ing-petclinic-ui
 spec:
   rules:
-  - host: route-ui-petclinic.apps.gbbappinno.northeurope.aroapp.io
+  - host: $ING_HOST
     http:
       paths:
-      - backend:
-          serviceName: ui-service
-          servicePort: 80
-        path: /
+      - path: /
         pathType: "Prefix"
-      - backend:
-          serviceName: ui-service
-          servicePort: 8081
-        path: /manage/health
+        backend:
+          service:
+            name: ui-service
+            port: 
+              number: 80
+      - path: /ui/manage/health
         pathType: "Prefix"
-      - backend:
-          serviceName: ui-service
-          servicePort: 8081
-        path: /manage/info
+        backend:
+          service:
+            name: ui-service
+            port: 
+              number: 8081
+      - path: /ui/manage/info
         pathType: "Prefix"
+        backend:
+          service:
+            name: ui-service
+            port: 
+              number: 8081
