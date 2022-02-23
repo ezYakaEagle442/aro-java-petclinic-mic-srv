@@ -10,6 +10,9 @@ spec:
       description: The directory in source that contains yaml manifests
       type: string
       default: "k8s"
+    - name: ING_HOST
+      description: The Ingress Router HostName like petclinic-xxx-<namespace>.apps.<domain>.<location>.aroapp.io
+      type: string      
   steps:
     - name: apply
       image: quay.io/openshift/origin-cli:latest
@@ -25,42 +28,29 @@ spec:
           echo listing current directory
           ls -al 
           echo -----------------------------------
-          echo listing $(workspaces.output.path)
-          ls -al $(workspaces.output.path)
-          echo -----------------------------------
 
           echo Checking Manifests files in the k8s directory
+          echo -----------------------------------
+          cp $(inputs.params.manifest_dir) $(inputs.params.manifest_dir)/deploy
 
-          echo -----------------------------------
-          echo "spring-petclinic-admin-server"
-          ls -al "spring-petclinic-admin-server/k8s"
-          echo -----------------------------------
+          export ING_HOST=$(inputs.params.ING_HOST)
+          # ls -Rl $(inputs.params.manifest_dir) | grep ingress.yaml
 
-          echo -----------------------------------
-          echo "spring-petclinic-api-gateway"
-          ls -al "spring-petclinic-api-gateway/k8s"
-          echo -----------------------------------
+          for i in `ls $(inputs.params.manifest_dir) | grep ingress.yaml`
+          do
+            if [ -d "$i" ]
+            then
+              l $(inputs.params.manifest_dir)/$i ;
+            else
+              echo $(inputs.params.manifest_dir)/$i
+              envsubst < $(inputs.params.manifest_dir)/$i > $(inputs.params.manifest_dir)/deploy/$i
+              cat $(inputs.params.manifest_dir)/deploy/$i
+            fi
+          done
 
-          echo -----------------------------------
-          echo "spring-petclinic-config-server"
-          ls -al "spring-petclinic-config-server/k8s"
-          echo -----------------------------------
-
-          echo -----------------------------------
-          echo "spring-petclinic-customers-service"
-          ls -al "spring-petclinic-customers-service/k8s"
-          echo -----------------------------------
-
-          echo -----------------------------------
-          echo "spring-petclinic-vets-service"
-          ls -al "spring-petclinic-vets-service/k8s"
+          ls -al $(inputs.params.manifest_dir)/deploy
           echo -----------------------------------
 
-          echo -----------------------------------
-          echo "spring-petclinic-visits-service"
-          ls -al "spring-petclinic-visits-service/k8s"
-          echo -----------------------------------
-        
           echo Applying manifests in $(inputs.params.manifest_dir) directory
-          oc apply -f $(inputs.params.manifest_dir)
+          oc apply -f $(inputs.params.manifest_dir)/deploy
           echo -----------------------------------

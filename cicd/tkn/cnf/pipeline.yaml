@@ -36,7 +36,10 @@ spec:
   - name: manifest_dir
     description: The directory in source that contains yaml manifests
     type: string
-    default: "k8s"    
+    default: "k8s"
+  - name: ING_HOST
+    description: The Ingress Router HostName like petclinic-xxx-<namespace>.apps.<domain>.<location>.aroapp.io
+    type: string      
   tasks:
   - name: fetch-repository
     taskRef:
@@ -106,6 +109,8 @@ spec:
     params:
     - name: manifest_dir
       value: $(params.manifest_dir)
+    - name: ING_HOST
+      value: $(params.ING_HOST)      
     workspaces:
     - name: source
       workspace: shared-workspace

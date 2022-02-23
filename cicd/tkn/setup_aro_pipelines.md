@@ -38,6 +38,48 @@ complete -F __start_tkn tkn
 tkn help
 tkn version
 ```
+## get ARO credentials
+
+```sh
+# those var name are set in the Bicep parameter files , check them at /iac/bicep/README.md & /iac/bicep/aro/parameters.json
+rg_name="rg-iac-aro-petclinic-mic-srv" 
+cluster_name="aro-java-petclinic"
+
+aro_api_server_url=$(az aro show -n $cluster_name -g $rg_name --query 'apiserverProfile.url' -o tsv)
+echo "ARO API server URL: " $aro_api_server_url
+
+aro_console_url=$(az aro show -n $cluster_name -g $rg_name --query 'consoleProfile.url' -o tsv)
+echo "ARO console URL: " $aro_console_url
+
+az aro list-credentials -n $cluster_name -g $rg_name
+aro_usr=$(az aro list-credentials -n $cluster_name -g $rg_name | jq -r '.kubeadminUsername')
+aro_pwd=$(az aro list-credentials -n $cluster_name -g $rg_name | jq -r '.kubeadminPassword')
+
+```
+
+## Install the OpenShift CLI
+
+See [https://docs.microsoft.com/en-us/azure/openshift/tutorial-connect-cluster#install-the-openshift-cli](https://docs.microsoft.com/en-us/azure/openshift/tutorial-connect-cluster#install-the-openshift-cli)
+```sh
+cd ~
+aro_download_url=${aro_console_url/console/downloads}
+echo "aro_download_url" $aro_download_url
+
+wget $aro_download_url/amd64/linux/oc.tar
+
+mkdir openshift
+tar -xvf oc.tar -C openshift
+echo 'export PATH=$PATH:~/openshift' >> ~/.bashrc && source ~/.bashrc
+oc version
+
+source <(oc completion bash)
+echo "source <(oc completion bash)" >> ~/.bashrc 
+
+oc login $aro_api_server_url -u $aro_usr -p $aro_pwd
+oc whoami
+oc cluster-info
+
+```
 
 Install the Red Hat OpenShift Pipelines Operator based on Tekton from the OperatorHub
 ```sh
@@ -106,6 +148,14 @@ oc describe clustertask maven
 
 #TODO https://github.com/tektoncd/catalog/blob/main/task/buildah/0.3/samples/openshift-internal-registry.yaml
 
+location=$(az aro show -n $cluster_name -g $rg_name --query 'location' -o tsv)
+domain=$(az aro show -n $cluster_name -g $rg_name --query 'clusterProfile.domain' -o tsv)
+namespace=$projectname
+
+# /!\ ING_HOST in the Ingress yaml files must match with the default route set at 
+# spring-petclinic-api-gateway/k8s/petclinic-ui-route.yaml
+ING_HOST="ui-$namespace.apps.$domain.$location.aroapp.io"
+
 # Lets start a pipeline to build and deploy the petclinic admin-server backend application using tkn:
 tkn pipeline start build-and-deploy \
     -w name=shared-workspace,volumeClaimTemplateFile=./cnf/persistent_volume_claim.yaml \
@@ -118,7 +168,8 @@ tkn pipeline start build-and-deploy \
     -p IMAGE=image-registry.openshift-image-registry.svc:5000/$projectname/admin-server \
     -p FORMAT=oci \
     -p subdirectory=spring-petclinic-admin-server \
-    -p manifest_dir=spring-petclinic-admin-server/k8s
+    -p manifest_dir=spring-petclinic-admin-server/k8s \
+    -p ING_HOST=$ING_HOST
     # --dry-run
 
 tkn pipeline start build-and-deploy \
@@ -132,7 +183,8 @@ tkn pipeline start build-and-deploy \
     -p IMAGE=image-registry.openshift-image-registry.svc:5000/$projectname/petclinic-ui \
     -p FORMAT=oci \
     -p subdirectory=spring-petclinic-api-gateway \
-    -p manifest_dir=spring-petclinic-api-gateway/k8s
+    -p manifest_dir=spring-petclinic-api-gateway/k8s \
+    -p ING_HOST=$ING_HOST
 
 tkn pipeline start build-and-deploy \
     -w name=shared-workspace,volumeClaimTemplateFile=./cnf/persistent_volume_claim.yaml \
@@ -145,7 +197,8 @@ tkn pipeline start build-and-deploy \
     -p IMAGE=image-registry.openshift-image-registry.svc:5000/$projectname/petclinic-config-server \
     -p FORMAT=oci \
     -p subdirectory=spring-petclinic-config-server \
-    -p manifest_dir=spring-petclinic-config-server/k8s
+    -p manifest_dir=spring-petclinic-config-server/k8s \
+    -p ING_HOST=$ING_HOST
 
 tkn pipeline start build-and-deploy \
     -w name=shared-workspace,volumeClaimTemplateFile=./cnf/persistent_volume_claim.yaml \
@@ -158,7 +211,8 @@ tkn pipeline start build-and-deploy \
     -p IMAGE=image-registry.openshift-image-registry.svc:5000/$projectname/petclinic-customers-service \
     -p FORMAT=oci \
     -p subdirectory=spring-petclinic-customers-service \
-    -p manifest_dir=spring-petclinic-customers-service/k8s
+    -p manifest_dir=spring-petclinic-customers-service/k8s \
+    -p ING_HOST=$ING_HOST
 
 tkn pipeline start build-and-deploy \
     -w name=shared-workspace,volumeClaimTemplateFile=./cnf/persistent_volume_claim.yaml \
@@ -171,7 +225,8 @@ tkn pipeline start build-and-deploy \
     -p IMAGE=image-registry.openshift-image-registry.svc:5000/$projectname/petclinic-vets-service \
     -p FORMAT=oci \
     -p subdirectory=spring-petclinic-vets-service \
-    -p manifest_dir=spring-petclinic-vets-service/k8s
+    -p manifest_dir=spring-petclinic-vets-service/k8s \
+    -p ING_HOST=$ING_HOST
 
 tkn pipeline start build-and-deploy \
     -w name=shared-workspace,volumeClaimTemplateFile=./cnf/persistent_volume_claim.yaml \
@@ -184,7 +239,8 @@ tkn pipeline start build-and-deploy \
     -p IMAGE=image-registry.openshift-image-registry.svc:5000/$projectname/petclinic-visits-service \
     -p FORMAT=oci \
     -p subdirectory=spring-petclinic-visits-service \
-    -p manifest_dir=spring-petclinic-visits-service/k8s
+    -p manifest_dir=spring-petclinic-visits-service/k8s \
+    -p ING_HOST=$ING_HOST
 
 # Debug/Troubleshoot:
 
