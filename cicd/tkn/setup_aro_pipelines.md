@@ -87,7 +87,7 @@ echo "Please Install the Red Hat OpenShift Pipelines Operator based on Tekton fr
 echo "$aro_console_url/operatorhub/ns/openshift-machine-api?category=Developer+Tools&keyword=Tekton"
 ```
 
-## Create a dummy App. Pipeline
+## Create the Pipeline
 
 ```sh
 projectname="petclinic"
@@ -102,11 +102,11 @@ oc create serviceaccount pipeline
 oc get sa pipeline
 oc describe sa pipeline
 
-sa_secret_name=$(kubectl get serviceaccount pipeline -o json | jq -Mr '.secrets[].name')
+sa_secret_name=$(oc get serviceaccount pipeline -o json | jq -Mr '.secrets[].name')
 echo "SA secret name " $sa_secret_name
 
 # Openshift Cheatsheet: https://gist.github.com/rafaeltuelho/111850b0db31106a4d12a186e1fbc53e
-sa_secret_value=$(oc get secrets  $sa_secret_name -o json | jq -Mr '.items[1].metadata.annotations["openshift.io/token-secret.value"]' | base64 -d)
+sa_secret_value=$(oc get secrets  $sa_secret_name -o json | jq -Mr '.items[0].metadata.annotations["openshift.io/token-secret.value"]') # | base64 -d)
 echo "SA secret  " $sa_secret_value
 
 kube_url=$(oc get endpoints -n default -o jsonpath='{.items[0].subsets[0].addresses[0].ip}')
@@ -116,18 +116,16 @@ curl -k $aro_api_server_url/api/v1/namespaces -H "Authorization: Bearer $sa_secr
 curl -k $aro_api_server_url/apis/user.openshift.io/v1/users/~ -H "Authorization: Bearer $sa_secret_value" -H 'Accept: application/json'
 
 oc adm policy add-scc-to-user privileged -z pipeline # system:serviceaccount:$projectname:pipeline
-# oc policy add-role-to-user registry-editor -z pipeline
 
 oc adm policy add-role-to-user edit -z pipeline
 oc describe scc privileged
 
+oc create -f ./cnf/storageclass-azurefile.yaml
 oc create -f ./cnf/apply_manifest_task.yaml
 oc create -f ./cnf/update_deployment_task.yaml
 oc create -f ./cnf/persistent_volume_claim.yaml
-oc create -f ./cnf/storageclass-azurefile.yaml
 oc apply -f  ./cnf/check-mvn-output-Task.yaml
 oc apply -f  ./cnf/pipeline.yaml
-
 
 oc apply -f ./cnf/maven_config_map.yaml
 oc describe cm maven-settings
@@ -145,7 +143,9 @@ oc describe clustertask git-clone-1-5-0
 oc describe clustertask buildah
 oc describe clustertask maven
 
-
+```
+## Run the Pipeline
+```sh
 #TODO https://github.com/tektoncd/catalog/blob/main/task/buildah/0.3/samples/openshift-internal-registry.yaml
 
 location=$(az aro show -n $cluster_name -g $rg_name --query 'location' -o tsv)
