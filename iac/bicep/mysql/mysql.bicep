@@ -13,7 +13,7 @@ param administratorLogin string = 'mys_adm'
 @description('The MySQL DB Admin Password.')
 param administratorLoginPassword string
 
-var serverName = '${appName}-mysql-server'
+var serverName = '${appName}'
 var databaseSkuName = 'Standard_B1ms ' //  'GP_Gen5_2' for single server
 var databaseSkuTier = 'Burstable' // 'GeneralPurpose'
 var mySqlVersion = '5.7' // https://docs.microsoft.com/en-us/azure/mysql/concepts-supported-versions
@@ -72,3 +72,6 @@ resource mysqlserver 'Microsoft.DBforMySQL/flexibleServers@2021-05-01' = {
     version: mySqlVersion
   }
 }
+
+// TODO : Add firewall config to allow ARO :
+// virtualNetworkRules to Allow public access from Azure services 
