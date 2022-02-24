@@ -31,7 +31,7 @@ spec:
 
           echo Checking Manifests files in the k8s directory
           echo -----------------------------------
-          cp $(inputs.params.manifest_dir) $(inputs.params.manifest_dir)/deploy
+          cp -r $(inputs.params.manifest_dir) $(inputs.params.manifest_dir)/deploy
 
           export ING_HOST=$(inputs.params.ING_HOST)
           # ls -Rl $(inputs.params.manifest_dir) | grep ingress.yaml
