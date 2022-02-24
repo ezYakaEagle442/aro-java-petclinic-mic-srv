@@ -120,14 +120,14 @@ oc adm policy add-scc-to-user privileged -z pipeline # system:serviceaccount:$pr
 oc adm policy add-role-to-user edit -z pipeline
 oc describe scc privileged
 
-oc create -f ./cnf/storageclass-azurefile.yaml
-oc create -f ./cnf/apply_manifest_task.yaml
-oc create -f ./cnf/update_deployment_task.yaml
-oc create -f ./cnf/persistent_volume_claim.yaml
-oc apply -f  ./cnf/check-mvn-output-Task.yaml
-oc apply -f  ./cnf/pipeline.yaml
+oc create -f cicd/tkn/cnf/storageclass-azurefile.yaml
+oc create -f cicd/tkn/cnf/apply_manifest_task.yaml
+oc create -f cicd/tkn/cnf/update_deployment_task.yaml
+oc create -f cicd/tkn/cnf/persistent_volume_claim.yaml
+oc apply -f  cicd/tkn/cnf/check-mvn-output-Task.yaml
+oc apply -f  cicd/tkn/cnf/pipeline.yaml
 
-oc apply -f ./cnf/maven_config_map.yaml
+oc apply -f cicd/tkn/cnf/maven_config_map.yaml
 oc describe cm maven-settings
 oc get cm maven-settings -o jsonpath='{.data.settings\.xml}'
 
@@ -156,9 +156,22 @@ namespace=$projectname
 # spring-petclinic-api-gateway/k8s/petclinic-ui-route.yaml
 ING_HOST="ui-$namespace.apps.$domain.$location.aroapp.io"
 
-# Lets start a pipeline to build and deploy the petclinic admin-server backend application using tkn:
 tkn pipeline start build-and-deploy \
-    -w name=shared-workspace,volumeClaimTemplateFile=./cnf/persistent_volume_claim.yaml \
+    -w name=shared-workspace,volumeClaimTemplateFile=cicd/tkn/cnf/persistent_volume_claim.yaml \
+    -w name=maven-settings,config=maven-settings \
+    -p deployment-name=config-server \
+    -p git-url=https://github.com/ezYakaEagle442/aro-java-petclinic-mic-srv \
+    -p git-revision=master \
+    -p DOCKERFILE=docker/petclinic-config-server/Dockerfile \
+    -p CONTEXT=. \
+    -p IMAGE=image-registry.openshift-image-registry.svc:5000/$projectname/petclinic-config-server \
+    -p FORMAT=oci \
+    -p subdirectory=spring-petclinic-config-server \
+    -p manifest_dir=spring-petclinic-config-server/k8s \
+    -p ING_HOST=$ING_HOST
+
+tkn pipeline start build-and-deploy \
+    -w name=shared-workspace,volumeClaimTemplateFile=cicd/tkn/cnf/persistent_volume_claim.yaml \
     -w name=maven-settings,config=maven-settings \
     -p deployment-name=admin-server \
     -p git-url=https://github.com/ezYakaEagle442/aro-java-petclinic-mic-srv \
@@ -173,7 +186,7 @@ tkn pipeline start build-and-deploy \
     # --dry-run
 
 tkn pipeline start build-and-deploy \
-    -w name=shared-workspace,volumeClaimTemplateFile=./cnf/persistent_volume_claim.yaml \
+    -w name=shared-workspace,volumeClaimTemplateFile=cicd/tkn/cnf/persistent_volume_claim.yaml \
     -w name=maven-settings,config=maven-settings \
     -p deployment-name=ui-service \
     -p git-url=https://github.com/ezYakaEagle442/aro-java-petclinic-mic-srv \
@@ -187,21 +200,7 @@ tkn pipeline start build-and-deploy \
     -p ING_HOST=$ING_HOST
 
 tkn pipeline start build-and-deploy \
-    -w name=shared-workspace,volumeClaimTemplateFile=./cnf/persistent_volume_claim.yaml \
-    -w name=maven-settings,config=maven-settings \
-    -p deployment-name=config-server \
-    -p git-url=https://github.com/ezYakaEagle442/aro-java-petclinic-mic-srv \
-    -p git-revision=master \
-    -p DOCKERFILE=docker/petclinic-config-server/Dockerfile \
-    -p CONTEXT=. \
-    -p IMAGE=image-registry.openshift-image-registry.svc:5000/$projectname/petclinic-config-server \
-    -p FORMAT=oci \
-    -p subdirectory=spring-petclinic-config-server \
-    -p manifest_dir=spring-petclinic-config-server/k8s \
-    -p ING_HOST=$ING_HOST
-
-tkn pipeline start build-and-deploy \
-    -w name=shared-workspace,volumeClaimTemplateFile=./cnf/persistent_volume_claim.yaml \
+    -w name=shared-workspace,volumeClaimTemplateFile=cicd/tkn/cnf/persistent_volume_claim.yaml \
     -w name=maven-settings,config=maven-settings \
     -p deployment-name=customers-service \
     -p git-url=https://github.com/ezYakaEagle442/aro-java-petclinic-mic-srv \
@@ -215,7 +214,7 @@ tkn pipeline start build-and-deploy \
     -p ING_HOST=$ING_HOST
 
 tkn pipeline start build-and-deploy \
-    -w name=shared-workspace,volumeClaimTemplateFile=./cnf/persistent_volume_claim.yaml \
+    -w name=shared-workspace,volumeClaimTemplateFile=cicd/tkn/cnf/persistent_volume_claim.yaml \
     -w name=maven-settings,config=maven-settings \
     -p deployment-name=vets-service \
     -p git-url=https://github.com/ezYakaEagle442/aro-java-petclinic-mic-srv \
@@ -229,7 +228,7 @@ tkn pipeline start build-and-deploy \
     -p ING_HOST=$ING_HOST
 
 tkn pipeline start build-and-deploy \
-    -w name=shared-workspace,volumeClaimTemplateFile=./cnf/persistent_volume_claim.yaml \
+    -w name=shared-workspace,volumeClaimTemplateFile=cicd/tkn/cnf/persistent_volume_claim.yaml \
     -w name=maven-settings,config=maven-settings \
     -p deployment-name=vets-service \
     -p git-url=https://github.com/ezYakaEagle442/aro-java-petclinic-mic-srv \
@@ -248,7 +247,7 @@ oc describe task apply-manifests
 
 oc describe task check-mvn-output
 tkn task start check-mvn-output \
-    -w name=output,volumeClaimTemplateFile=./cnf/persistent_volume_claim.yaml
+    -w name=output,volumeClaimTemplateFile=cicd/tkn/cnf/persistent_volume_claim.yaml
 
 #  get the route of the application by executing the following command and access the application
 oc get route pipelines-admin-server --template='http://{{.spec.host}}'
