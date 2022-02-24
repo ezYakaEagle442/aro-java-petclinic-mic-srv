@@ -55,7 +55,7 @@ COPY --from=builder /tmp/app/application/ ./
 # RUN touch /app.jar
 EXPOSE 80 8080 8081 8082 8083 8084 8888 9090
 
-ENV SPRING_PROFILES_ACTIVE docker
+ENV SPRING_PROFILES_ACTIVE docker,mysql
 
-ENTRYPOINT ["java", "org.springframework.boot.loader.JarLauncher", "--server.port=9090", "--spring.profiles.active=docker"]
+ENTRYPOINT ["java", "org.springframework.boot.loader.JarLauncher", "--server.port=9090", "--spring.profiles.active=docker,mysql"]
 # ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom", "-jar", "/tmp/app/app.jar"]
