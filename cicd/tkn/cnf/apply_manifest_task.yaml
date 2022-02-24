@@ -26,13 +26,15 @@ spec:
           pwd
           echo -----------------------------------
           echo listing current directory
-          ls -al 
+          ls -al
+          creating deploy directory ...
+          mkdir $(inputs.params.manifest_dir)/deploy/
           echo -----------------------------------
 
           echo Checking Manifests files in the k8s directory
           echo -----------------------------------
-          ls -al $(inputs.params.manifest_dir)/deploy/
           cp $(inputs.params.manifest_dir)/*.yaml $(inputs.params.manifest_dir)/deploy/
+          ls -al $(inputs.params.manifest_dir)/deploy/
           echo -----------------------------------
 
           export INGRESS_HOST=$(inputs.params.ING_HOST)
