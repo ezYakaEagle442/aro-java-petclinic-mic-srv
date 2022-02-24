@@ -27,11 +27,11 @@ spec:
           echo -----------------------------------
           echo listing current directory
           ls -al
-          creating deploy directory ...
+          echo creating deploy directory ...
           mkdir $(inputs.params.manifest_dir)/deploy/
           echo -----------------------------------
 
-          echo Checking Manifests files in the k8s directory
+          echo Checking Manifests files in the k8s/deploy/ directory
           echo -----------------------------------
           cp $(inputs.params.manifest_dir)/*.yaml $(inputs.params.manifest_dir)/deploy/
           ls -al $(inputs.params.manifest_dir)/deploy/
@@ -52,17 +52,17 @@ spec:
               # which envsubst
               # envsubst --version
               # sed -i -e "s/ING_HOST/route-config/" spring-petclinic-visits-service/k8s/petclinic-visits-ingress.yaml
-              # cat spring-petclinic-visits-service/k8s/petclinic-visits-ingress.yaml  | sed -e "s/ING_HOST/${ING_HOST}/g"
-              cat $(inputs.params.manifest_dir)/$i | sed -e "s/ING_HOST/${ING_HOST}/g" > $(inputs.params.manifest_dir)/deploy/$i
+              # cat spring-petclinic-visits-service/k8s/petclinic-visits-ingress.yaml  | sed -e "s/ING_HOST/${ING_HOST}/g" > spring-petclinic-visits-service/k8s/deploy/petclinic-visits-ingress.yaml
+              cat $(inputs.params.manifest_dir)/$i | sed -e "s/ING_HOST/${INGRESS_HOST}/g" > $(inputs.params.manifest_dir)/deploy/$i
               echo ING_HOST substituted 
               cat $(inputs.params.manifest_dir)/deploy/$i
+              echo \n
               echo -----------------------------------
             fi
           done
 
-          ls -al $(inputs.params.manifest_dir)/deploy/
           echo -----------------------------------
 
-          echo Applying manifests in $(inputs.params.manifest_dir) directory
+          echo Applying manifests in $(inputs.params.manifest_dir)/deploy directory
           oc apply -f $(inputs.params.manifest_dir)/deploy
           echo -----------------------------------
