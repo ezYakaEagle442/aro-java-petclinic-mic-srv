@@ -31,9 +31,9 @@ spec:
 
           echo Checking Manifests files in the k8s directory
           echo -----------------------------------
-          cp -r $(inputs.params.manifest_dir) $(inputs.params.manifest_dir)/deploy
+          cp $(inputs.params.manifest_dir)/*.yaml $(inputs.params.manifest_dir)/deploy
 
-          export ING_HOST=$(inputs.params.ING_HOST)
+          export INGRESS_HOST=$(inputs.params.ING_HOST)
           # ls -Rl $(inputs.params.manifest_dir) | grep ingress.yaml
 
           for i in `ls $(inputs.params.manifest_dir) | grep ingress.yaml`
@@ -43,7 +43,12 @@ spec:
               l $(inputs.params.manifest_dir)/$i ;
             else
               echo $(inputs.params.manifest_dir)/$i
-              envsubst < $(inputs.params.manifest_dir)/$i > $(inputs.params.manifest_dir)/deploy/$i
+              # envsubst < $(inputs.params.manifest_dir)/$i > $(inputs.params.manifest_dir)/deploy/$i
+              # which envsubst
+              # envsubst --version
+              # sed -i -e "s/ING_HOST/route-config/" spring-petclinic-visits-service/k8s/petclinic-visits-ingress.yaml
+              # cat spring-petclinic-visits-service/k8s/petclinic-visits-ingress.yaml  | sed -e "s/ING_HOST/${ING_HOST}/g"
+              cat $(inputs.params.manifest_dir)/$i | sed -e "s/ING_HOST/${ING_HOST}/g" > $(inputs.params.manifest_dir)/deploy/$i
               cat $(inputs.params.manifest_dir)/deploy/$i
             fi
           done
