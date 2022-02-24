@@ -4,7 +4,7 @@ metadata:
   name: ing-petclinic-visits
 spec:
   rules:
-  - host: $ING_HOST
+  - host: ING_HOST
     http:
       paths:
       - path: /visits-service
