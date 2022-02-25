@@ -28,4 +28,7 @@ spec:
       script: echo test-tag | tee /tekton/results/IMAGE_TAG
       volumeMounts:
       - name: varlibcontainers
-        mountPath: /var/lib/containers      
+        mountPath: /var/lib/containers
+  volumes:
+  - name: varlibcontainers
+    emptyDir: {}
