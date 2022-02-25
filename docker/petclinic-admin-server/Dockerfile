@@ -11,6 +11,7 @@
 # docker ps
 # docker exec -it b177880414c5 /bin/sh
 # docker inspect --format '{{ .NetworkSettings.Networks.bridge.IPAddress }}' <container>  
+# docker images --filter reference=petclinic-admin-server --format "{{.Tag}}"
 
 # https://docs.microsoft.com/en-us/java/openjdk/containers
 FROM mcr.microsoft.com/openjdk/jdk:11-mariner as builder
