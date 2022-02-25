@@ -5,15 +5,18 @@ metadata:
 spec:
   params:
     - name: IMAGE
-      description: Iname to check Tag and Digest
+      description: Image name to check Tag and Digest
       type: string
   results:
   - name: IMAGE_TAG
-    description: The image Tag   
+    description: The image Tag # https://github.com/containers/buildah/blob/main/docs/buildah-images.1.md
   steps:
     - name: get-tag
       image: quay.io/buildah/stable:latest
-      command: ['buildah', 'images', '--filter reference=$(inputs.params.IMAGE)', '--format "{{.Tag}}'] 
+      command: ['buildah', '--storage-driver=overlay', 'images', '--filter reference=$(inputs.params.IMAGE)', '--format="{{.Tag}}'] 
     - name: get-digest
       image: quay.io/buildah/stable:latest
-      command: ['buildah', 'images', '--filter reference=$(inputs.params.IMAGE)', '--format "{{.Digest}}']
+      command: ['buildah', '--storage-driver=overlay', 'images', '--filter reference=$(inputs.params.IMAGE)', '--format="{{.Digest}}']
+    - name: set-results
+      image: quay.io/buildah/stable:latest
+      script: echo test-tag | tee /tekton/results/IMAGE_TAG
