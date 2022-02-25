@@ -13,19 +13,19 @@ spec:
   steps:
     - name: get-tag
       image: quay.io/buildah/stable:latest
-      command: ['buildah', 'images', '--filter=reference=$(inputs.params.IMAGE)', '--format="{{.Tag}}"']
+      command: ['buildah', 'images', '--filter=reference=$(inputs.params.IMAGE)', '--format={{.Tag}}']
       volumeMounts:
       - name: varlibcontainers
         mountPath: /var/lib/containers
     - name: get-digest
       image: quay.io/buildah/stable:latest
-      command: ['buildah', 'images', '--filter=reference=$(inputs.params.IMAGE)', '--format="{{.Digest}}"']
+      command: ['buildah', 'images', '--filter=reference=$(inputs.params.IMAGE)', '--format={{.Digest}}']
       volumeMounts:
       - name: varlibcontainers
         mountPath: /var/lib/containers
     - name: set-results
       image: quay.io/buildah/stable:latest
-      script: buildah images --filter reference=$(inputs.params.IMAGE) --format="{{.Tag}}"' | tee /tekton/results/IMAGE_TAG
+      script: buildah images --filter reference=$(inputs.params.IMAGE) --format={{.Tag}}' | tee /tekton/results/IMAGE_TAG
       volumeMounts:
       - name: varlibcontainers
         mountPath: /var/lib/containers
