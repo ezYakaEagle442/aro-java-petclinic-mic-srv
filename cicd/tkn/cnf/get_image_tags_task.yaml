@@ -7,13 +7,13 @@ spec:
     - name: IMAGE
       description: Iname to check Tag and Digest
       type: string
+  results:
+  - name: IMAGE_TAG
+    description: The image Tag   
   steps:
     - name: get-tag
-      image: quay.io/buildah/stable:v1.14.8
-      script: | 
-        #!/usr/local/bin/bash
-        tag=`buildah images --filter reference=$(inputs.params.IMAGE) --format "{{.Tag}}"`
-        echo Tag $tag
-
-        digest=`buildah images --filter reference=$(inputs.params.IMAGE) --format "{{.Digest}}"`
-        echo Digest $digest
+      image: quay.io/buildah/stable:latest
+      command: ['buildah', 'images', '--filter reference=$(inputs.params.IMAGE)', '--format "{{.Tag}}'] 
+    - name: get-digest
+      image: quay.io/buildah/stable:latest
+      command: ['buildah', 'images', '--filter reference=$(inputs.params.IMAGE)', '--format "{{.Digest}}']
