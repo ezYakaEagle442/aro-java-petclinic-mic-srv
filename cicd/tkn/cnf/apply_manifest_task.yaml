@@ -54,7 +54,8 @@ spec:
               # sed -i -e "s/ING_HOST/route-config/" spring-petclinic-visits-service/k8s/petclinic-visits-ingress.yaml
               # cat spring-petclinic-visits-service/k8s/petclinic-visits-ingress.yaml  | sed -e "s/ING_HOST/${ING_HOST}/g" > spring-petclinic-visits-service/k8s/deploy/petclinic-visits-ingress.yaml
               cat $(inputs.params.manifest_dir)/$i | sed -e "s/ING_HOST/${INGRESS_HOST}/g" > $(inputs.params.manifest_dir)/deploy/$i
-              echo ING_HOST substituted 
+              echo ING_HOST substituted
+              echo \n
               cat $(inputs.params.manifest_dir)/deploy/$i
               echo \n
               echo -----------------------------------
