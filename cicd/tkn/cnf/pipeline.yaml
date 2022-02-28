@@ -86,6 +86,8 @@ spec:
     runAfter:
     - maven-build    
   - name: build-image
+    # https://github.com/tektoncd/catalog/blob/v1beta1/buildah/buildah.yaml
+    # buildah Task Build 'bud' the image witout any Tag parameter
     taskRef:
       name: buildah
       kind: ClusterTask
@@ -97,7 +99,7 @@ spec:
     - name: DOCKERFILE
       value: $(params.DOCKERFILE)
     - name: CONTEXT
-      value: $(params.CONTEXT)           
+      value: $(params.CONTEXT)       
     workspaces:
     - name: source
       workspace: shared-workspace     
@@ -115,15 +117,7 @@ spec:
     - name: source
       workspace: shared-workspace
     runAfter:
-    - build-image
-  - name: get-tag
-    taskRef:
-      name: get-tag
-    params:      
-    - name: IMAGE
-      value: $(params.IMAGE)        
-    runAfter:
-    - apply-manifests
+    - check-mvn
   - name: update-deployment
     taskRef:
       name: update-deployment
@@ -138,6 +132,14 @@ spec:
     - name: IMAGE_DIGEST
       value: $(tasks.build-image.results.IMAGE_DIGEST)
     - name: IMAGE_TAG
-      value: $(tasks.get-tag.results.IMAGE_TAG)           
+      value: $(tasks.check-mvn.results.GIT_COMMIT_ID)          
     runAfter:
-    - get-tag
+    - apply-manifests
+  - name: get-tag
+    taskRef:
+      name: get-tag
+    params:      
+    - name: IMAGE
+      value: $(params.IMAGE)        
+    runAfter:
+    - update-deployment
