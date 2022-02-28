@@ -13,10 +13,7 @@ spec:
   steps:
     - image: quay.io/buildah/stable:latest
       name: tag-image
-      resources: {}
-      script: >
-        #!/usr/bin/env bash
-        buildah tag $(params.IMAGE) $(params.IMAGE):$(params.IMAGE_TAG)
+      command: ['buildah', 'tag', '$(params.IMAGE)', '$(params.IMAGE):$(params.IMAGE_TAG']
       volumeMounts:
         - mountPath: /var/lib/containers
           name: varlibcontainers   
