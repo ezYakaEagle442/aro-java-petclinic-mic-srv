@@ -10,15 +10,24 @@ spec:
     - name: IMAGE
       description: Location of image to be patched with
       type: string
+    - name: IMAGE_DIGEST
+      description: the IMAGE_DIGEST result from build-image Task results output
+      type: string
+    - name: IMAGE_TAG
+      description: the IMAGE Tag result from build-image Task results output
+      type: string        
   steps:
     - name: patch
       image: quay.io/openshift/origin-cli:latest
       command: ["/bin/bash", "-c"]
       args:
         - |-
+          echo IMAGE_DIGEST=$(inputs.params.IMAGE_DIGEST)
+          echo IMAGE_TAG=$(inputs.params.IMAGE_TAG)
+          patching $(inputs.params.deployment) with Image $IMAGE_TAG"
           oc patch deployment $(inputs.params.deployment) --patch='{"spec":{"template":{"spec":{
             "containers":[{
               "name": "$(inputs.params.deployment)",
-              "image":"$(inputs.params.IMAGE)"
+              "image":"$(inputs.params.IMAGE):$IMAGE_TAG"
             }]
           }}}}'
