@@ -1,0 +1,25 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: list-tags
+spec:
+  params:
+    - name: deployment
+      description: Image name to check Tag
+      type: string
+    - name: IMAGE
+      description: Image to get Tags
+      type: string
+    - name: IMAGE_TAG
+      description: the IMAGE Tag
+      type: string        
+  steps:
+    - name: show-tags
+      image: quay.io/openshift/origin-cli:latest
+      command: ["/bin/bash", "-c"]
+      args:
+        - |-
+          echo -----------------------------------
+          echo IMAGE=$(inputs.params.IMAGE)
+          echo IMAGE_TAG=$(inputs.params.IMAGE_TAG)
+          echo -----------------------------------
