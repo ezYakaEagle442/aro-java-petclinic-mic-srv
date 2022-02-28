@@ -100,9 +100,9 @@ spec:
       value: $(params.CONTEXT)           
     workspaces:
     - name: source
-      workspace: shared-workspace
+      workspace: shared-workspace     
     runAfter:
-    - check-mvn
+    - maven-build
   - name: apply-manifests
     taskRef:
       name: apply-manifests
@@ -116,6 +116,14 @@ spec:
       workspace: shared-workspace
     runAfter:
     - build-image
+  - name: get-tag
+    taskRef:
+      name: get-tag
+    params:      
+    - name: IMAGE
+      value: $(params.IMAGE)        
+    runAfter:
+    - apply-manifests
   - name: update-deployment
     taskRef:
       name: update-deployment
@@ -124,5 +132,12 @@ spec:
       value: $(params.deployment-name)
     - name: IMAGE
       value: $(params.IMAGE)
+    # TODO: https://github.com/tektoncd/pipeline/blob/main/docs/pipelines.md#using-the-from-field
+    # The Output of the build-image Task  is given as an `Input`
+    # to the next `Task` update-deployment using`from` clause.  
+    - name: IMAGE_DIGEST
+      value: $(tasks.build-image.results.IMAGE_DIGEST)
+    - name: IMAGE_TAG
+      value: $(tasks.get-tag.results.IMAGE_TAG)           
     runAfter:
-    - apply-manifests
+    - get-tag
