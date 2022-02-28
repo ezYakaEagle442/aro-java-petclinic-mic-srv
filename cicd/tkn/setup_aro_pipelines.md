@@ -121,9 +121,10 @@ oc adm policy add-role-to-user edit -z pipeline
 oc describe scc privileged
 
 oc create -f cicd/tkn/cnf/storageclass-azurefile.yaml
+oc create -f cicd/tkn/cnf/persistent_volume_claim.yaml
+oc create -f cicd/tkn/cnf/get_image_tags_task.yaml
 oc create -f cicd/tkn/cnf/apply_manifest_task.yaml
 oc create -f cicd/tkn/cnf/update_deployment_task.yaml
-oc create -f cicd/tkn/cnf/persistent_volume_claim.yaml
 oc apply -f  cicd/tkn/cnf/check-mvn-output-Task.yaml
 oc apply -f  cicd/tkn/cnf/pipeline.yaml
 
@@ -230,7 +231,7 @@ tkn pipeline start build-and-deploy \
 tkn pipeline start build-and-deploy \
     -w name=shared-workspace,volumeClaimTemplateFile=cicd/tkn/cnf/persistent_volume_claim.yaml \
     -w name=maven-settings,config=maven-settings \
-    -p deployment-name=vets-service \
+    -p deployment-name=visits-service \
     -p git-url=https://github.com/ezYakaEagle442/aro-java-petclinic-mic-srv \
     -p git-revision=master \
     -p DOCKERFILE=docker/petclinic-visits-service/Dockerfile \

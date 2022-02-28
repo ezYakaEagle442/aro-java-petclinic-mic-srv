@@ -12,15 +12,15 @@ See [iac/bicep/README.md](iac/bicep/README.md)
 
 ## Starting services locally without Docker
 
-Quick local test just to verify that the jar files can be run (the routing will not work out of a K8S cluster): 
+Quick local test just to verify that the jar files can be run (the routing will not work out of a K8S cluster, and also the apps will fail to start as soon as management port 8081 will be already in use by config server ...): 
 ```sh
 mvn package -Dmaven.test.skip=true
-java -jar spring-petclinic-config-server\target\spring-petclinic-config-server-2.6.1.jar --server.port=8888
-java -jar spring-petclinic-admin-server\target\spring-petclinic-admin-server-2.6.1.jar --server.port=9090
-java -jar spring-petclinic-visits-service\target\spring-petclinic-visits-service-2.6.1.jar --server.port=8082 # --spring.profiles.active=docker
-java -jar spring-petclinic-vets-service\target\spring-petclinic-vets-service-2.6.1.jar --server.port=8083
-java -jar spring-petclinic-customers-service\target\spring-petclinic-customers-service-2.6.1.jar --server.port=8084
-java -jar spring-petclinic-api-gateway\target\spring-petclinic-api-gateway-2.6.1.jar --server.port=8085
+java -jar spring-petclinic-config-server\target\spring-petclinic-config-server-2.6.3.jar --server.port=8888
+java -jar spring-petclinic-admin-server\target\spring-petclinic-admin-server-2.6.3.jar --server.port=9090
+java -jar spring-petclinic-visits-service\target\spring-petclinic-visits-service-2.6.3.jar --server.port=8082 # --spring.profiles.active=docker
+java -jar spring-petclinic-vets-service\target\spring-petclinic-vets-service-2.6.3.jar --server.port=8083
+java -jar spring-petclinic-customers-service\target\spring-petclinic-customers-service-2.6.3.jar --server.port=8084
+java -jar spring-petclinic-api-gateway\target\spring-petclinic-api-gateway-2.6.3.jar --server.port=8085
 ```
 
 Every microservice is a Spring Boot application and can be started locally using IDE ([Lombok](https://projectlombok.org/) plugin has to be set up) or `../mvnw spring-boot:run` command. Please note that supporting services (Config and Discovery Server) must be started before any other application (Customers, Vets, Visits and API).
@@ -81,6 +81,8 @@ spring:
     #password: petclinic
     initialization-mode: ALWAYS
 ```
+
+You can check the DB connection with this [sample project](https://github.com/Azure-Samples/java-on-azure-examples/tree/main/databases/mysql/get-country).
 
 ### Use the Spring 'mysql' profile
 
