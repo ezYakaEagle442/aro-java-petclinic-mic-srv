@@ -122,7 +122,7 @@ spec:
     - name: IMAGE
       value: $(params.IMAGE)        
     runAfter:
-    - tag-image
+    - update-deployment
   - name: list-tags
     taskRef:
       name: list-tags
@@ -160,6 +160,6 @@ spec:
     - name: IMAGE_DIGEST
       value: $(tasks.build-image.results.IMAGE_DIGEST)
     - name: IMAGE_TAG
-      value: $(tasks.check-mvn.results.GIT_COMMIT_ID)          
+      value: latest # $(tasks.check-mvn.results.GIT_COMMIT_ID)          
     runAfter:
     - apply-manifests
