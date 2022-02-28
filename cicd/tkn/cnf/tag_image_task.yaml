@@ -1,0 +1,26 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: tag-image
+spec:
+  params:
+    - name: IMAGE
+      description: Image name to check Tag and Digest
+      type: string
+    - name: IMAGE_TAG
+      description: the IMAGE Tag
+      type: string 
+  steps:
+    - image: quay.io/buildah/stable:latest
+      name: tag-image
+      resources: {}
+      script: >
+        #!/usr/bin/env bash
+        echo about to tag $(params.IMAGE) $(params.IMAGE):$(params.IMAGE_TAG)
+        buildah tag $(params.IMAGE) $(params.IMAGE):$(params.IMAGE_TAG)
+      volumeMounts:
+        - mountPath: /var/lib/containers
+          name: varlibcontainers   
+  volumes:
+  - name: varlibcontainers
+    emptyDir: {}
