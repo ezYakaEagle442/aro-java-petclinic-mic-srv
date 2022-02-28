@@ -64,7 +64,7 @@ spec:
     params:
     - name: GOALS # https://hub.tekton.dev/tekton/task/maven
       value:
-        # - -DskipTests
+        - -DskipTests
         - clean
         - package
         #- Dmaven.repo.local=$(workspaces.local-maven-repo.path)
