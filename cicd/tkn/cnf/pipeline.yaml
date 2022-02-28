@@ -95,7 +95,7 @@ spec:
     - name: TLSVERIFY
       value: "false"
     - name: IMAGE
-      value: $(params.IMAGE):$(tasks.check-mvn.results.GIT_COMMIT_ID)
+      value: $(params.IMAGE) # :$(tasks.check-mvn.results.GIT_COMMIT_ID)
     - name: DOCKERFILE
       value: $(params.DOCKERFILE)
     - name: CONTEXT
@@ -105,6 +105,34 @@ spec:
       workspace: shared-workspace     
     runAfter:
     - check-mvn
+  - name: tag-image
+    taskRef:
+      name: tag-image
+    params:      
+    - name: IMAGE
+      value: $(params.IMAGE)
+    - name: IMAGE_TAG
+      value: $(tasks.check-mvn.results.GIT_COMMIT_ID)             
+    runAfter:
+    - build-image 
+  - name: get-tag
+    taskRef:
+      name: get-tag
+    params:      
+    - name: IMAGE
+      value: $(params.IMAGE)        
+    runAfter:
+    - tag-image
+  - name: list-tags
+    taskRef:
+      name: list-tags
+    params:      
+    - name: IMAGE
+      value: $(params.IMAGE)
+    - name: IMAGE_TAG
+      value: $(tasks.get-tag.results.IMAGE_TAG)               
+    runAfter:
+    - get-tag  
   - name: apply-manifests
     taskRef:
       name: apply-manifests
@@ -135,21 +163,3 @@ spec:
       value: $(tasks.check-mvn.results.GIT_COMMIT_ID)          
     runAfter:
     - apply-manifests
-  - name: get-tag
-    taskRef:
-      name: get-tag
-    params:      
-    - name: IMAGE
-      value: $(params.IMAGE)        
-    runAfter:
-    - update-deployment
-  - name: list-tags
-    taskRef:
-      name: list-tags
-    params:      
-    - name: IMAGE
-      value: $(params.IMAGE)
-    - name: IMAGE_TAG
-      value: $(tasks.get-tag.results.IMAGE_TAG)               
-    runAfter:
-    - get-tag
