@@ -6,12 +6,15 @@ spec:
   workspaces: # https://tekton.dev/vault/pipelines-v0.22.0/tasks/#specifying-workspaces
   - name: output
     mountPath: /workspace
+  results:
+  - name: GIT_COMMIT_ID
+    description: The Git Commit ID  
   steps:
     - name: init
       image: bash:latest # mcr.microsoft.com/azure-cli:latest
-      # command: ["/usr/local/bin/bash", "-c"] # which bash ==> /usr/local/bin/bash
       workingDir: /workspace
       script: | 
+        # command: ["/usr/local/bin/bash", "-c"] # which bash ==> /usr/local/bin/bash
         #!/usr/local/bin/bash
         echo -----------------------------------  
         echo workingDir 
@@ -60,6 +63,20 @@ spec:
         echo "spring-petclinic-visits-service"
         ls -al "spring-petclinic-visits-service"
         ls -al "spring-petclinic-visits-service/target"
+        echo -----------------------------------
+
+       
+        echo Get git.commit.id property from spring-petclinic-customers-service/target/classes/git.properties
+        echo and set it as result, so that it can be reused then to Tag the Image
+        echo -----------------------------------
+        cat spring-petclinic-customers-service/target/classes/git.properties |
+        while IFS='=' read -r key value;
+        do
+            if [ "$key" = "git.commit.id" ]
+                then
+                  echo "$key"="$value"
+                  echo "$value" | tee /tekton/results/GIT_COMMIT_ID
+        done
         echo -----------------------------------
 
         echo -----------------------------------  
