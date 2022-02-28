@@ -44,7 +44,7 @@ spec:
               memory: "360Mi"
               cpu: "300m"
           ports:
-          - containerPort: 8080
+          - containerPort: 8888
             name: server
           - containerPort: 8081
             name: management
