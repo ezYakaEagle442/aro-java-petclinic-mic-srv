@@ -13,11 +13,4 @@ spec:
           service:
             name: visits-service
             port: 
-              number: 80        
-      - path: /api/visit/
-        pathType: "Prefix"
-        backend:
-          service:
-            name: visits-service
-            port: 
               number: 80

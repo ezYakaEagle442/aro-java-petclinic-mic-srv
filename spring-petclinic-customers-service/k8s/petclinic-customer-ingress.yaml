@@ -13,35 +13,7 @@ spec:
           service:
             name: customers-service
             port: 
-              number: 80
-      - path: /api/customer/
-        pathType: "Prefix"      
-        backend:
-            service:
-              name: customers-service
-              port: 
-                number: 80
-      - path: /api/gateway/owners/
-        pathType: "Prefix"      
-        backend:
-            service:
-              name: customers-service
-              port: 
-                number: 80  
-      - path: /api/owners/
-        pathType: "Prefix"      
-        backend:
-            service:
-              name: customers-service
-              port: 
-                number: 80
-      - path: /owners/
-        pathType: "Prefix"      
-        backend:
-            service:
-              name: customers-service
-              port: 
-                number: 80                         
+              number: 80                      
       - path: /manage/health
         pathType: "Prefix"
         backend:
