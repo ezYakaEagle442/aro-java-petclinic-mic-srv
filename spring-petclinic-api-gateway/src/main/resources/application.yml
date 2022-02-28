@@ -4,23 +4,30 @@ spring:
     name: api-gateway
   config:
     import: optional:configserver:${CONFIG_SERVER_URL:http://localhost:8888/}
+---
+spring:
+  config:
+    activate:
+      on-profile: docker
+    import: configserver:http://config-server:8888
+---        
   cloud:
     gateway:
       routes:
         - id: vets-service
-          uri: lb://vets-service
+          uri: http://vets-service
           predicates:
             - Path=/api/vet/**
           filters:
             - StripPrefix=2
         - id: visits-service
-          uri: lb://visits-service
+          uri: http://visits-service
           predicates:
             - Path=/api/visit/**
           filters:
             - StripPrefix=2
         - id: customers-service
-          uri: lb://customers-service
+          uri: http://customers-service
           predicates:
             - Path=/api/customer/**
           filters:
@@ -62,9 +69,3 @@ management:
       enabled: true            
   server:
     port: 8081
----
-spring:
-  config:
-    activate:
-      on-profile: docker
-    import: configserver:http://config-server:8888
