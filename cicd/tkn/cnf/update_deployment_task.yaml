@@ -5,7 +5,7 @@ metadata:
 spec:
   params:
     - name: deployment
-      description: The name of the deployment patch the image
+      description: The name of the deployment to patch the image
       type: string
     - name: IMAGE
       description: Location of image to be patched with
@@ -14,7 +14,7 @@ spec:
       description: the IMAGE_DIGEST result from build-image Task results output
       type: string
     - name: IMAGE_TAG
-      description: the IMAGE Tag result from build-image Task results output
+      description: the IMAGE Tag
       type: string        
   steps:
     - name: patch
@@ -25,10 +25,10 @@ spec:
           echo IMAGE=$(inputs.params.IMAGE)
           echo IMAGE_DIGEST=$(inputs.params.IMAGE_DIGEST)
           echo IMAGE_TAG=$(inputs.params.IMAGE_TAG)
-          echo patching $(inputs.params.deployment) with Image "$(inputs.params.IMAGE):$IMAGE_TAG"
+          echo patching $(inputs.params.deployment) with Image "$IMAGE:$IMAGE_TAG"
           oc patch deployment $(inputs.params.deployment) --patch='{"spec":{"template":{"spec":{
             "containers":[{
               "name": "$(inputs.params.deployment)",
-              "image":"$(inputs.params.IMAGE):$IMAGE_TAG"
+              "image":"$(inputs.params.IMAGE):$(inputs.params.IMAGE_TAG)"
             }]
           }}}}'
