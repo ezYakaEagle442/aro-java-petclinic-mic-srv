@@ -16,7 +16,6 @@ spec:
       resources: {}
       script: >
         #!/usr/bin/env bash
-        echo about to tag $(params.IMAGE) $(params.IMAGE):$(params.IMAGE_TAG)
         buildah tag $(params.IMAGE) $(params.IMAGE):$(params.IMAGE_TAG)
       volumeMounts:
         - mountPath: /var/lib/containers
