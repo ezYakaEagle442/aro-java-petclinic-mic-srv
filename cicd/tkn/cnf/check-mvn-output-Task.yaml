@@ -71,12 +71,13 @@ spec:
         echo -----------------------------------
         cat spring-petclinic-customers-service/target/classes/git.properties |
         while IFS='=' read -r key value;
-        do
+          do
             if [ "$key" = "git.commit.id" ]
-                then
-                  echo "$key"="$value"
-                  echo "$value" | tee /tekton/results/GIT_COMMIT_ID
-        done
+              then
+                echo "$key"="$value"
+                echo "$value" | tee /tekton/results/GIT_COMMIT_ID
+            fi
+          done
         echo -----------------------------------
 
         echo -----------------------------------  
