@@ -42,14 +42,14 @@ spec:
               name: customers-service
               port: 
                 number: 80                         
-      - path: /customer/manage/health
+      - path: /manage/health
         pathType: "Prefix"
         backend:
           service:
             name: customers-service
             port: 
               number: 8081
-      - path: /customer/manage/info
+      - path: /manage/info
         pathType: "Prefix"
         backend:
           service:
