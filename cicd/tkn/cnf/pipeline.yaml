@@ -87,7 +87,7 @@ spec:
     - maven-build    
   - name: build-image
     # https://github.com/tektoncd/catalog/blob/v1beta1/buildah/buildah.yaml
-    # buildah Task Build 'bud' the image witout any Tag parameter
+    # buildah Task Build 'bud' the image
     taskRef:
       name: buildah
       kind: ClusterTask
@@ -95,7 +95,7 @@ spec:
     - name: TLSVERIFY
       value: "false"
     - name: IMAGE
-      value: $(params.IMAGE) # :$(tasks.check-mvn.results.GIT_COMMIT_ID)
+      value: $(params.IMAGE):$(tasks.check-mvn.results.GIT_COMMIT_ID)
     - name: DOCKERFILE
       value: $(params.DOCKERFILE)
     - name: CONTEXT
