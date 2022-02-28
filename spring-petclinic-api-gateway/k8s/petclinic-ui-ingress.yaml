@@ -14,17 +14,3 @@ spec:
             name: ui-service
             port: 
               number: 80
-      - path: /ui/manage/health
-        pathType: "Prefix"
-        backend:
-          service:
-            name: ui-service
-            port: 
-              number: 8081
-      - path: /ui/manage/info
-        pathType: "Prefix"
-        backend:
-          service:
-            name: ui-service
-            port: 
-              number: 8081

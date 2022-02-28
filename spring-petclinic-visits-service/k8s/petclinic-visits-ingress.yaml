@@ -21,17 +21,3 @@ spec:
             name: visits-service
             port: 
               number: 80
-      - path: /visits/manage/health
-        pathType: "Prefix"
-        backend:
-          service:
-            name: visits-service
-            port: 
-              number: 8081
-      - path: /visits/manage/info
-        pathType: "Prefix"
-        backend:
-          service:
-            name: visits-service
-            port: 
-              number: 8081

@@ -13,18 +13,4 @@ spec:
           service:
             name: config-server
             port: 
-              number: 8888        
-      - path: /config/manage/health
-        pathType: "Prefix"
-        backend:
-          service:
-            name: config-server
-            port: 
-              number: 8081
-      - path: /config/manage/info
-        pathType: "Prefix"
-        backend:
-          service:
-            name: config-server
-            port: 
-              number: 8081
+              number: 8888

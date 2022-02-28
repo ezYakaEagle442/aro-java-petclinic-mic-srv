@@ -21,18 +21,4 @@ spec:
             name: vets-service
             port: 
               number: 80
-      - path: /vets/manage/health
-        pathType: "Prefix"
-        backend:
-          service:
-            name: vets-service
-            port: 
-              number: 8081
-      - path: /vets/manage/info
-        pathType: "Prefix"
-        backend:
-          service:
-            name: vets-service
-            port: 
-              number: 8081
 
