@@ -29,6 +29,17 @@ spec:
       volumeMounts:
       - name: varlibcontainers
         mountPath: /var/lib/containers
+    - name: log-tag
+      image: bash:latest # quay.io/openshift/origin-cli:latest mcr.microsoft.com/azure-cli:latest
+      workingDir: /workspace
+      script: | 
+        # command: ["/usr/local/bin/bash", "-c"] # which bash ==> /usr/local/bin/bash
+        #!/usr/local/bin/bash
+        echo -----------------------------------
+        echo /tekton/results/IMAGE_TAG
+        ls /tekton/results/IMAGE_TAG
+        cat /tekton/results/IMAGE_TAG
+        echo -----------------------------------  
   volumes:
   - name: varlibcontainers
     emptyDir: {}
