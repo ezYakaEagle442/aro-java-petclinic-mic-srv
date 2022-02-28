@@ -104,7 +104,7 @@ spec:
     - name: source
       workspace: shared-workspace     
     runAfter:
-    - maven-build
+    - check-mvn
   - name: apply-manifests
     taskRef:
       name: apply-manifests
@@ -117,7 +117,7 @@ spec:
     - name: source
       workspace: shared-workspace
     runAfter:
-    - check-mvn
+    - build-image
   - name: update-deployment
     taskRef:
       name: update-deployment
