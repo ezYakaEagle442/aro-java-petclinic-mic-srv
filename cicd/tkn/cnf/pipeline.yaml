@@ -114,7 +114,7 @@ spec:
     - name: IMAGE_TAG
       value: $(tasks.check-mvn.results.GIT_COMMIT_ID)             
     runAfter:
-    - build-image 
+    - update-deployment
   - name: get-tag
     taskRef:
       name: get-tag
@@ -122,7 +122,7 @@ spec:
     - name: IMAGE
       value: $(params.IMAGE)        
     runAfter:
-    - update-deployment
+    -  tag-image
   - name: list-tags
     taskRef:
       name: list-tags
