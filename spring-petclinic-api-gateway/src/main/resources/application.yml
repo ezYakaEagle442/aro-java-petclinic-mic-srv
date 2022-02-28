@@ -12,6 +12,9 @@ spring:
     import: configserver:http://config-server:8888
 ---        
   cloud:
+    loadbalancer:
+    ribbon:
+      enabled: false
     gateway:
       routes:
         - id: vets-service
