@@ -4,9 +4,6 @@ metadata:
   name: list-tags
 spec:
   params:
-    - name: deployment
-      description: Image name to check Tag
-      type: string
     - name: IMAGE
       description: Image to get Tags
       type: string
