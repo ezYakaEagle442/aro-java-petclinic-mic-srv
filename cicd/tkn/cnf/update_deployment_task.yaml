@@ -22,9 +22,10 @@ spec:
       command: ["/bin/bash", "-c"]
       args:
         - |-
+          echo IMAGE=$(inputs.params.IMAGE)
           echo IMAGE_DIGEST=$(inputs.params.IMAGE_DIGEST)
           echo IMAGE_TAG=$(inputs.params.IMAGE_TAG)
-          patching $(inputs.params.deployment) with Image $IMAGE_TAG"
+          patching $(inputs.params.deployment) with Image "$(inputs.params.IMAGE):$IMAGE_TAG"
           oc patch deployment $(inputs.params.deployment) --patch='{"spec":{"template":{"spec":{
             "containers":[{
               "name": "$(inputs.params.deployment)",
