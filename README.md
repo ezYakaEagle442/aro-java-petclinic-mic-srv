@@ -50,7 +50,9 @@ You can then access petclinic here: http://localhost:8080/
 
 
 The UI code is located at spring-petclinic-api-gateway\src\main\resources\static\scripts.
+
 The Spring Cloud Gateway routing is configuted at spring-petclinic-api-gateway\src\main\resources\application.yml
+
 The OpenShift routing is configured in the Ingress resources at :
 - spring-petclinic-api-gateway\k8s\petclinic-ui-ingress.yaml
 - spring-petclinic-admin-server\k8s\petclinic-admin-server-ingress.yaml
