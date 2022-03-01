@@ -112,14 +112,15 @@ ENV SPRING_PROFILES_ACTIVE docker,mysql
 In the `mysql section` of the `application.yml` from the [Configuration repository], you have to change 
 the host and port of your MySQL JDBC connection string. 
 
-## Use OpenShift Pipelines to deploy the Java microservices
+## CI/CD
+
+### Use OpenShift Pipelines to deploy the Java microservices
 
 See Tekton section [cicd/tkn](./cicd/tkn/setup_aro_pipelines.md)
 
-## Use RedHat GitHub Actions to deploy the Java microservices
+### Use RedHat GitHub Actions to deploy the Java microservices
 
 See RedHat GitHub Actions section [cicd/tkn](./cicd/rh-gha/README.md)
-
 
 ## Observability
 
@@ -138,7 +139,7 @@ TODO !
 ### secret Management
 Azure AD Workload Identity and Azure Key Vault : TODO !
 
-
+## DNS Management
 
 ### Custom metrics
 Spring Boot registers a lot number of core metrics: JVM, CPU, Tomcat, Logback... 
