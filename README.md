@@ -12,7 +12,7 @@ See [iac/bicep/README.md](iac/bicep/README.md)
 
 ## Starting services locally without Docker
 
-Quick local test just to verify that the jar files can be run (the routing will not work out of a K8S cluster, and also the apps will fail to start as soon as management port 8081 will be already in use by config server ...): 
+Quick local test just to verify that the jar files can be run (the routing will not work out of a K8S cluster, and also the apps will fail to start as soon as management port 8081 will be already in use by config server ...) : 
 ```sh
 mvn package -Dmaven.test.skip=true
 java -jar spring-petclinic-config-server\target\spring-petclinic-config-server-2.6.3.jar --server.port=8888
@@ -23,16 +23,15 @@ java -jar spring-petclinic-customers-service\target\spring-petclinic-customers-s
 java -jar spring-petclinic-api-gateway\target\spring-petclinic-api-gateway-2.6.3.jar --server.port=8085
 ```
 
-Every microservice is a Spring Boot application and can be started locally using IDE ([Lombok](https://projectlombok.org/) plugin has to be set up) or `../mvnw spring-boot:run` command. Please note that supporting services (Config and Discovery Server) must be started before any other application (Customers, Vets, Visits and API).
-Startup of Tracing server, Admin server, Grafana and Prometheus is optional.
+Every microservice is a Spring Boot application and can be started locally. 
+Please note that supporting services (Config Server) must be started before any other application (Customers, Vets, Visits and API).
+Startup Admin server is optional.
 If everything goes well, you can access the following services at given location:
 * AngularJS frontend (API Gateway) - http://localhost:8080
 * Admin Server (Spring Boot Admin) - http://localhost:9090
 
 
-
 The `master` branch uses an MS openjdk/jdk:11-mariner Docker base.
-
 
 ## Understanding the Spring Petclinic application
 
@@ -49,7 +48,18 @@ You can then access petclinic here: http://localhost:8080/
 
 ![Spring Petclinic Microservices architecture](docs/microservices-architecture-diagram.jpg)
 
+
 The UI code is located at spring-petclinic-api-gateway\src\main\resources\static\scripts.
+The Spring Cloud Gateway routing is configuted at spring-petclinic-api-gateway\src\main\resources\application.yml
+The OpenShift routing is configured in the Ingress resources at :
+- spring-petclinic-api-gateway\k8s\petclinic-ui-ingress.yaml
+- spring-petclinic-admin-server\k8s\petclinic-admin-server-ingress.yaml
+- spring-petclinic-config-server\k8s\petclinic-config-server-ingress.yaml
+- spring-petclinic-customers-service\k8s\petclinic-customer-ingress.yaml
+- spring-petclinic-vets-service\k8s\petclinic-vet-ingress.yaml
+- spring-petclinic-visits-service\k8s\petclinic-visits-ingress.yaml
+
+The Git repo URL used by Spring config is set in spring-petclinic-config-server\src\main\resources\application.yml
 
 If you want to know more about the Spring Boot Admin server, you might be interested in [https://github.com/codecentric/spring-boot-admin](https://github.com/codecentric/spring-boot-admin)
 
@@ -76,9 +86,9 @@ spring:
     schema: classpath*:db/mysql/schema.sql
     data: classpath*:db/mysql/data.sql
     # url: jdbc:mysql://localhost:3306/petclinic?useSSL=false
-    url: jdbc:mysql://petcliaro-mysql-server.mysql.database.azure.com:3306/petclinic?useSSL=true";myDbConn=DriverManager.getConnection(url, "mys_adm", "Your Password set in Bicep iac/bicep/mysql/parameters-mysql.json / administratorLoginPassword");
-    #username: root
-    #password: petclinic
+    url: jdbc:mysql://petcliaro-mysql-server.mysql.database.azure.com:3306/petclinic?useSSL=true&requireSSL=true&enabledTLSProtocols=TLSv1.2&verifyServerCertificate=false
+    username: mys_adm
+    password: IsTrator42!
     initialization-mode: ALWAYS
 ```
 
@@ -104,26 +114,29 @@ the host and port of your MySQL JDBC connection string.
 
 See Tekton section [cicd/tkn](./cicd/tkn/setup_aro_pipelines.md)
 
-## Custom metrics monitoring
+## Use RedHat GitHub Actions to deploy the Java microservices
 
-Grafana and Prometheus are included in the `docker-compose.yml` configuration, and the public facing applications
-have been instrumented with [MicroMeter](https://micrometer.io) to collect JVM and custom business metrics.
+See RedHat GitHub Actions section [cicd/tkn](./cicd/rh-gha/README.md)
 
-A JMeter load testing script is available to stress the application and generate metrics: [petclinic_test_plan.jmx](spring-petclinic-api-gateway/src/test/jmeter/petclinic_test_plan.jmx)
 
-![Grafana metrics dashboard](docs/grafana-custom-metrics-dashboard.png)
+## Observability
 
-### Using Prometheus
+TODO !
 
-* Prometheus can be accessed from your local machine at http://localhost:9091
+## Scaling
 
-### Using Grafana with Prometheus
+TODO !
 
-* An anonymous access and a Prometheus datasource are setup.
-* A `Spring Petclinic Metrics` Dashboard is available at the URL http://localhost:3000/d/69JXeR0iw/spring-petclinic-metrics.
-You will find the JSON configuration file here: [docker/grafana/dashboards/grafana-petclinic-dashboard.json]().
-* You may create your own dashboard or import the [Micrometer/SpringBoot dashboard](https://grafana.com/dashboards/4701) via the Import Dashboard menu item.
-The id for this dashboard is `4701`.
+## Resiliency
+
+Circuit breakers
+TODO !
+
+## Security
+### secret Management
+Azure AD Workload Identity and Azure Key Vault : TODO !
+
+
 
 ### Custom metrics
 Spring Boot registers a lot number of core metrics: JVM, CPU, Tomcat, Logback... 

@@ -171,6 +171,11 @@ tkn pipeline start build-and-deploy \
     -p manifest_dir=spring-petclinic-config-server/k8s \
     -p ING_HOST=$ING_HOST
 
+###############################################################################################
+#
+# WAIT FOR CONFIG-SERVER Pods (3) TO BE Up & Running in READY STATE ...
+#
+###############################################################################################
 tkn pipeline start build-and-deploy \
     -w name=shared-workspace,volumeClaimTemplateFile=cicd/tkn/cnf/persistent_volume_claim.yaml \
     -w name=maven-settings,config=maven-settings \
@@ -185,34 +190,6 @@ tkn pipeline start build-and-deploy \
     -p manifest_dir=spring-petclinic-admin-server/k8s \
     -p ING_HOST=$ING_HOST
     # --dry-run
-
-tkn pipeline start build-and-deploy \
-    -w name=shared-workspace,volumeClaimTemplateFile=cicd/tkn/cnf/persistent_volume_claim.yaml \
-    -w name=maven-settings,config=maven-settings \
-    -p deployment-name=ui-service \
-    -p git-url=https://github.com/ezYakaEagle442/aro-java-petclinic-mic-srv \
-    -p git-revision=master \
-    -p DOCKERFILE=docker/petclinic-api-gateway/Dockerfile \
-    -p CONTEXT=. \
-    -p IMAGE=image-registry.openshift-image-registry.svc:5000/$projectname/petclinic-ui \
-    -p FORMAT=oci \
-    -p subdirectory=spring-petclinic-api-gateway \
-    -p manifest_dir=spring-petclinic-api-gateway/k8s \
-    -p ING_HOST=$ING_HOST
-
-tkn pipeline start build-and-deploy \
-    -w name=shared-workspace,volumeClaimTemplateFile=cicd/tkn/cnf/persistent_volume_claim.yaml \
-    -w name=maven-settings,config=maven-settings \
-    -p deployment-name=customers-service \
-    -p git-url=https://github.com/ezYakaEagle442/aro-java-petclinic-mic-srv \
-    -p git-revision=master \
-    -p DOCKERFILE=docker/petclinic-customers-service/Dockerfile \
-    -p CONTEXT=. \
-    -p IMAGE=image-registry.openshift-image-registry.svc:5000/$projectname/petclinic-customers-service \
-    -p FORMAT=oci \
-    -p subdirectory=spring-petclinic-customers-service \
-    -p manifest_dir=spring-petclinic-customers-service/k8s \
-    -p ING_HOST=$ING_HOST
 
 tkn pipeline start build-and-deploy \
     -w name=shared-workspace,volumeClaimTemplateFile=cicd/tkn/cnf/persistent_volume_claim.yaml \
@@ -242,6 +219,37 @@ tkn pipeline start build-and-deploy \
     -p manifest_dir=spring-petclinic-visits-service/k8s \
     -p ING_HOST=$ING_HOST
 
+tkn pipeline start build-and-deploy \
+    -w name=shared-workspace,volumeClaimTemplateFile=cicd/tkn/cnf/persistent_volume_claim.yaml \
+    -w name=maven-settings,config=maven-settings \
+    -p deployment-name=customers-service \
+    -p git-url=https://github.com/ezYakaEagle442/aro-java-petclinic-mic-srv \
+    -p git-revision=master \
+    -p DOCKERFILE=docker/petclinic-customers-service/Dockerfile \
+    -p CONTEXT=. \
+    -p IMAGE=image-registry.openshift-image-registry.svc:5000/$projectname/petclinic-customers-service \
+    -p FORMAT=oci \
+    -p subdirectory=spring-petclinic-customers-service \
+    -p manifest_dir=spring-petclinic-customers-service/k8s \
+    -p ING_HOST=$ING_HOST
+
+tkn pipeline start build-and-deploy \
+    -w name=shared-workspace,volumeClaimTemplateFile=cicd/tkn/cnf/persistent_volume_claim.yaml \
+    -w name=maven-settings,config=maven-settings \
+    -p deployment-name=ui-service \
+    -p git-url=https://github.com/ezYakaEagle442/aro-java-petclinic-mic-srv \
+    -p git-revision=master \
+    -p DOCKERFILE=docker/petclinic-api-gateway/Dockerfile \
+    -p CONTEXT=. \
+    -p IMAGE=image-registry.openshift-image-registry.svc:5000/$projectname/petclinic-ui \
+    -p FORMAT=oci \
+    -p subdirectory=spring-petclinic-api-gateway \
+    -p manifest_dir=spring-petclinic-api-gateway/k8s \
+    -p ING_HOST=$ING_HOST
+
+#  get the route of the application by executing the following command and access the application
+oc get route ui --template='http://{{.spec.host}}'
+
 # Debug/Troubleshoot:
 
 oc describe task apply-manifests
@@ -250,23 +258,8 @@ oc describe task check-mvn-output
 tkn task start check-mvn-output \
     -w name=output,volumeClaimTemplateFile=cicd/tkn/cnf/persistent_volume_claim.yaml
 
-#  get the route of the application by executing the following command and access the application
-oc get route pipelines-admin-server --template='http://{{.spec.host}}'
-
 # https://docs.openshift.com/container-platform/4.9/registry/accessing-the-registry.html
-oc logs deployments/image-registry -n openshift-image-registry | grep -i "admin-server"
-
-
-# Similarly, start a pipeline to build and deploy config-server application:
-
-# Similarly, start a pipeline to build and deploy the UI client application:
-
-# Similarly, start a pipeline to build and deploy customer service :
-
-# Similarly, start a pipeline to build and deploy vets service :
-
-# Similarly, start a pipeline to build and deploy visists service:
-
+oc logs deployments/image-registry -n openshift-image-registry | grep -i "customers-service"
 
 tkn pipeline list
 tkn pipelinerun ls
@@ -274,6 +267,4 @@ tkn pipeline logs -f
 
 # to re-run the pipeline again, use the following short-hand command to rerun the last pipelinerun again that uses the same workspaces, params and sa used in the previous pipeline run:
 tkn pipeline start build-and-deploy --last
-
-
 ```
