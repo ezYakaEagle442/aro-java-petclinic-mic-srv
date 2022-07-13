@@ -2,6 +2,7 @@
 
 - [Understanding OpenShift Pipelines](https://docs.openshift.com/container-platform/4.9/cicd/pipelines/understanding-openshift-pipelines.html)
 - [Tekton overview](https://tekton.dev/docs/overview)
+- [How to use Tekton to set up a CI pipeline with OpenShift Pipelines](https://www.redhat.com/architect/cicd-pipeline-openshift-tekton)
 - [TektonCD Pipelines](https://github.com/tektoncd/pipeline/blob/master/docs/pipelines.md)
 - [Guide to OpenShift pipelines part 2](https://www.openshift.com/blog/guide-to-openshift-pipelines-part-2-using-source-2-image-build-in-tekton)
 - [Guide to OpenShift pipelines part4](https://www.openshift.com/blog/guide-to-openshift-pipelines-part-4-application-deployment-and-pipeline-orchestration-1)
